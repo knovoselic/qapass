@@ -1,0 +1,11 @@
+FROM node:12-alpine
+
+ENV NODE_ENV development
+WORKDIR /usr/src/app
+
+USER node
+
+EXPOSE 3000
+
+# ENTRYPOINT /bin/sh -c "while true; do echo hello world; sleep 1; done"
+ENTRYPOINT npm start

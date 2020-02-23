@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "lib": ["es7", "dom"],
+    "sourceMap": true,
+    "outDir": "./dist",
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "typeRoots": ["./src/@types", "./node_modules/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "src/@types/*"
+      ]
+    },
+    "types": ["reflect-metadata"],
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+  }
+}
