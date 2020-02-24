@@ -1,9 +1,11 @@
 import { Container, injectable, decorate } from 'inversify';
-import "reflect-metadata";
-import knex from "knex";
-import "../controllers/AuthController";
-import "../controllers/HomeController";
-import { createConnection, Connection } from "typeorm"
+import 'reflect-metadata';
+import knex from 'knex';
+import '../controllers/AuthController';
+import '../controllers/HomeController';
+import { createConnection, Connection } from 'typeorm';
+import User from '../entity/User';
+import Auth from './Auth';
 
 decorate(injectable(), Connection);
 
@@ -70,6 +72,19 @@ export default class ServiceProvider
      * @memberof ServiceProvider
      */
     protected register = async () => {
-        //
+
+        this.container
+            .bind<User>('User')
+            .to(User);
+
+        this.container
+            .bind<Auth>('Auth')
+            .toDynamicValue(() : Auth => {
+                return new Auth(
+                    this.container.get('User'),
+                    this.container.get('typeorm')
+                );
+            })
+            .inRequestScope();
     };
 }

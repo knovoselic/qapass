@@ -6,7 +6,7 @@ import BaseController from './BaseController';
 class HomeController extends BaseController implements interfaces.Controller
 {
     @httpGet('/')
-    public async home(@request() req: Request, @response() res: Response, @next() next: NextFunction)
+    public home(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         return this.render(res, 'home');
     }

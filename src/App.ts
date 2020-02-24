@@ -6,8 +6,11 @@ import express from 'express';
 import exphbs  from 'express-handlebars';
 import errorHanlder from './services/ErrorHandler';
 import path  from 'path';
-import session from 'express-session';
+import expressSession from 'express-session';
+import cookieParser from 'cookie-parser';
 import flash from 'connect-flash';
+
+let MemoryStore = require('memorystore')(expressSession);
 
 const hbs = exphbs.create({
   extname: 'hbs',
@@ -22,13 +25,16 @@ if(process.env.APP_SECRET) {
   secret = process.env.APP_SECRET;
 }
 
-const ses = session({
+const session = expressSession({
   secret: secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
     maxAge: 600000
-  }
+  },
+  store: new MemoryStore({
+    checkPeriod: 86400000
+  }),
 });
 
 class App {
@@ -36,7 +42,7 @@ class App {
   private server: InversifyExpressServer;
 
   protected async build()
-  {
+  {1
     this.serviceProvider = await ServiceProvider.get();
 
     const container = this.serviceProvider.getContainer();
@@ -50,8 +56,9 @@ class App {
       app.engine('hbs', hbs.engine);
       app.set('view engine', 'hbs');
       app.set('views', path.resolve(`${__dirname}/../resources/views`));
-      app.use(ses);
-      app.use(flash);
+      app.use(cookieParser());
+      app.use(session);
+      app.use(flash());
       app.use(bodyParser.urlencoded({"extended": true}));
     });
 
@@ -72,7 +79,8 @@ class App {
       .listen(
         3000,
         () => console.log(`Server started`)
-      );
+      )
+      .setTimeout(10000);
   };
 }
 
