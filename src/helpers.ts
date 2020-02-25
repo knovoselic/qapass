@@ -16,3 +16,20 @@ export const knex = () => {
 
     return container.get<knexConnection>('knex');
 }
+
+export const validation_errors = (req: Request) => {
+
+    return getFlash(req, 'validation-errors');
+}
+
+export const getFlash = (req: Request, identifier: string) => {
+
+    let flash = req.flash(identifier);
+
+    if(flash.length < 1) {
+
+        return;
+    }
+
+    return flash[0];
+}

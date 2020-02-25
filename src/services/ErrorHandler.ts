@@ -4,16 +4,20 @@ import { accepts_json } from "../helpers";
 
 class ErrorHandler
 {
+    protected log_codes = [
+        400, 408
+    ];
+
     public handle = (err: any,req: Request, res: Response, next: NextFunction) => {
         const date = new Date();
 
         const content = `${date}\r\n${req.method} on ${req.path}\r\nError:\r\n${err}\r\n`;
 
-        if(err.status >= 500) {
-            logger.write(content, 'error-log.txt');
-
-            if(process.env.APP_ENV == 'local') console.log(err);
+        if(err.status >= 500 || this.log_codes.includes(err.status)) {
+            logger.write(content, 'errors.log');
         }
+
+        if(process.env.APP_ENV == 'local') console.log(err);
 
         if(accepts_json(req)) {
 
