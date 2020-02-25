@@ -36,7 +36,7 @@ export const getFlash = (req: Request, identifier: string) => {
     return flash[0];
 }
 
-export const auth_user = (req: Request) => {
+export const auth_user = async (req: Request) => {
 
     if(!req.user) return null;
 
@@ -44,8 +44,7 @@ export const auth_user = (req: Request) => {
 
     const connection = container.get<Connection>('typeorm');
 
-    const user = connection.getRepository(User).findOne(req.user);
+    const user = await connection.getRepository(User).findOne(req.user);
 
-    console.log(user);
-    // get user instance and bind to container
+    return user;
 }

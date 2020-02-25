@@ -2,9 +2,11 @@ import { Container, injectable, decorate } from 'inversify';
 import 'reflect-metadata';
 import knex from 'knex';
 import '../controllers/AuthController';
-import '../controllers/HomeController';
+import '../controllers/AccountController';
+import '../controllers/ApiKeyController';
 import { createConnection, Connection } from 'typeorm';
 import User from '../entity/User';
+import Account from '../entity/Account';
 import Auth from './Auth';
 
 decorate(injectable(), Connection);
@@ -76,6 +78,10 @@ export default class ServiceProvider
         this.container
             .bind<User>('User')
             .to(User);
+
+        this.container
+            .bind<Account>('Account')
+            .to(Account);
 
         this.container
             .bind<Auth>('Auth')

@@ -1,6 +1,7 @@
-import {Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import {Entity, PrimaryGeneratedColumn, Column, OneToMany} from "typeorm";
 import { injectable } from "inversify";
 import bcrypt from 'bcryptjs';
+import Account from "./Account";
 
 @Entity({name: 'users'})
 @injectable()
@@ -14,6 +15,9 @@ export default class User {
 
     @Column('varchar')
     password: string;
+
+    @OneToMany(type => Account, account => account.user)
+    accounts: Account[];
 
     public async validatePassword(password: string)
     {

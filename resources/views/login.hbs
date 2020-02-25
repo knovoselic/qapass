@@ -7,7 +7,7 @@
     <p>{{error}}</p>
     <br><br>
   {{/if}}
-  <form class="w-50 m-0 m-auto" action="/login" method="POST">
+  <form action="/login" method="POST">
     <label for="email">Email: </label>
     <input type="email" name="email" id="email">
     {{#if errors.email}}

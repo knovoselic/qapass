@@ -5,6 +5,8 @@ import required from "../../validators/required";
 import string from "../../validators/string";
 import unique from "../../validators/unique";
 import email from "../../validators/email";
+import max from "../../validators/max";
+import inValues from "../../validators/in";
 import RequestInterface from "../interfaces/Request";
 import RuleMapping from "../interfaces/RuleMapping";
 import path from 'path';
@@ -24,6 +26,8 @@ export default abstract class Request
             required: required,
             string: string,
             email: email,
+            max: max,
+            in: inValues,
             unique: unique
         };
     }

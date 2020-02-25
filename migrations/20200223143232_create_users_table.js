@@ -1,7 +1,7 @@
 
 exports.up = function(knex, Promise) {
     return knex.schema.createTable('users', (table) => {
-        table.bigincrements('id');
+        table.bigIncrements('id');
         table.string('email', 40).notNullable().unique();
         table.string('password').notNullable();
     });
