@@ -9,6 +9,7 @@ import path  from 'path';
 import expressSession from 'express-session';
 import cookieParser from 'cookie-parser';
 import flash from 'connect-flash';
+import passport from 'passport';
 
 let MemoryStore = require('memorystore')(expressSession);
 
@@ -37,6 +38,13 @@ const session = expressSession({
   }),
 });
 
+passport.serializeUser((user: any, done) => {
+  done(null, user.id);
+});
+passport.deserializeUser((user: any, done) => {
+  done(null, user);
+});
+
 class App {
   private serviceProvider: ServiceProvider;
   private server: InversifyExpressServer;
@@ -58,6 +66,8 @@ class App {
       app.set('views', path.resolve(`${__dirname}/../resources/views`));
       app.use(cookieParser());
       app.use(session);
+      app.use(passport.initialize());
+      app.use(passport.session());
       app.use(flash());
       app.use(bodyParser.urlencoded({"extended": true}));
     });

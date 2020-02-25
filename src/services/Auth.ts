@@ -47,11 +47,10 @@ class Auth
 
             promise
                 .then(fulfilled => {
-
                     done(null,fulfilled);
                 })
                 .catch(rejected => {
-                    done(rejected);
+                    done(null, false, {message: rejected.message});
                 });
         });
     }
@@ -65,11 +64,6 @@ class Auth
             }, (req, email, password, done) => {
 
                 const promise = new Promise(async (res, rej) => {
-
-                    if(await this.userRepository.findOne({'email': email})) {
-                        return rej(new Exception('User with that email already exists.', 422));
-                    }
-
                     const salt = bcrypt.genSaltSync(10);
                     const hash = bcrypt.hashSync(password, salt);
 
@@ -77,18 +71,7 @@ class Auth
                     this.user.password = hash;
 
                     try {
-
                         this.user = await this.userRepository.save(this.user);
-
-                        const user = await this.userRepository.findOne({'email': this.user.email})
-
-                        if(user == null) {
-
-                            throw new Exception('Error on fetching user from database.', 500);
-                        }
-
-                        this.user = user;
-
                     } catch (error) {
                         return rej(error);
                     }
@@ -102,26 +85,9 @@ class Auth
                         done(null,fulfilled);
                     })
                     .catch(rejected => {
-                        done(rejected);
+                        done(null, false, {message: rejected.message});
                     });
         });
-    }
-
-    public async userById(id: number): Promise< User | null >
-    {
-        try {
-            const user = await this.userRepository.findOne(id);
-
-            if(!user) {
-
-                return null;
-            }
-
-            return user;
-
-        } catch (error) {
-            throw error;
-        }
     }
 }
 

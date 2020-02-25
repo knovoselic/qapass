@@ -3,13 +3,33 @@
 <head>
 </head>
 <body>
+  {{#if error}}
+    <p>{{error}}</p>
+    <br><br>
+  {{/if}}
   <form class="w-50 m-0 m-auto" action="/register" method="POST">
-    <label for="email">Email</label>
+    <label for="email">Email: </label>
     <input type="email" name="email" id="email">
-    <label for="password">Password</label>
+    {{#if errors.email}}
+    <br>
+    {{#each errors.email}}
+      {{this}}<br>
+    {{/each}}
+    {{/if}}
+    <br><br>
+    <label for="password">Password: </label>
     <input type="password" name="password" id="password">
+    {{#if errors.password}}
+    <br>
+    {{#each errors.password}}
+      {{this}}<br>
+    {{/each}}
+    {{/if}}
+    <br><br>
     <input type="hidden" name="_csrf" value="{{csrf}}">
     <input type="submit" value="Submit">
   </form>
+  <br><br>
+  <a href="/login">Login</a>
 </body>
 </html>
