@@ -7,7 +7,9 @@ import '../controllers/ApiKeyController';
 import { createConnection, Connection } from 'typeorm';
 import User from '../entity/User';
 import Account from '../entity/Account';
+import ApiKey from '../entity/ApiKey';
 import Auth from './Auth';
+import ApiKeyListTransformer from '../transformers/ApiKeyListTransformer';
 
 decorate(injectable(), Connection);
 
@@ -82,6 +84,14 @@ export default class ServiceProvider
         this.container
             .bind<Account>('Account')
             .to(Account);
+
+        this.container
+            .bind<ApiKey>('ApiKey')
+            .to(ApiKey);
+
+        this.container
+            .bind<ApiKeyListTransformer>('ApiKeyListTransformer')
+            .to(ApiKeyListTransformer);
 
         this.container
             .bind<Auth>('Auth')
