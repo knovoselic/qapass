@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { interfaces, controller, httpGet, request, response, next, httpPut, httpPost, httpDelete, requestParam } from 'inversify-express-utils';
 import BaseController from './BaseController';
-import { authenticated } from '../middlewares/authenticated';
+import authenticated from '../middlewares/authenticated';
 import { Connection, Repository } from 'typeorm';
 import Account from '../entity/Account';
 import { inject } from 'inversify';

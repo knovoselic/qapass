@@ -4,12 +4,15 @@ import knex from 'knex';
 import '../controllers/AuthController';
 import '../controllers/AccountController';
 import '../controllers/ApiKeyController';
+import '../controllers/ApiController';
 import { createConnection, Connection } from 'typeorm';
 import User from '../entity/User';
 import Account from '../entity/Account';
 import ApiKey from '../entity/ApiKey';
 import Auth from './Auth';
 import ApiKeyListTransformer from '../transformers/ApiKeyListTransformer';
+import AccountFilter from '../filters/AccountFilter';
+import AccountListTransformer from '../transformers/AccountListTransformer';
 
 decorate(injectable(), Connection);
 
@@ -92,6 +95,14 @@ export default class ServiceProvider
         this.container
             .bind<ApiKeyListTransformer>('ApiKeyListTransformer')
             .to(ApiKeyListTransformer);
+
+        this.container
+            .bind<AccountFilter>('AccountFilter')
+            .to(AccountFilter);
+
+        this.container
+            .bind<AccountListTransformer>('AccountListTransformer')
+            .to(AccountListTransformer);
 
         this.container
             .bind<Auth>('Auth')

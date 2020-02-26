@@ -8,8 +8,7 @@ import guest from '../middlewares/guest';
 import registerRequest from '../requests/RegisterRequest';
 import loginRequest from '../requests/LoginRequest';
 import { validation_errors } from '../helpers';
-import { authenticated } from "../middlewares/authenticated";
-import User from "../entity/User";
+import authenticated from "../middlewares/authenticated";
 
 @controller('')
 class AuthController extends BaseController implements interfaces.Controller
