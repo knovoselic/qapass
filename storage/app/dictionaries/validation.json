@@ -1,0 +1,8 @@
+{
+    "required": "Value is required.",
+    "email": "Value must be valid email format.",
+    "string": "Value must be of type \"string\".",
+    "in": "Value is not allowed.",
+    "max": "Value is not allowed.",
+    "unique": "Value already exists."
+}
