@@ -10,6 +10,7 @@ import inValues from "../../validators/in";
 import RequestInterface from "../interfaces/Request";
 import RuleMapping from "../interfaces/RuleMapping";
 import path from 'path';
+import RuleDefinition from "../interfaces/RuleDefinition";
 
 export default abstract class Request
 {
@@ -32,59 +33,57 @@ export default abstract class Request
         };
     }
 
-    public validate = async (req: ExpressRequest, res: Response, next: NextFunction) =>
+    protected mapErrors(errors: any, field_errors: any)
     {
-        const rules = this.rules(req);
-
-        var errors: any = {};
-
-        try {
-            for (const field in rules.rules){
-                if (rules.rules.hasOwnProperty(field)) {
-                    const field_errors = await this.validateField(req, field, rules.rules[field]);
-
-                    for (const validation_field in field_errors){
-                        if (field_errors.hasOwnProperty(validation_field)) {
-
-                            let out_errors = field_errors[validation_field];
-
-                            for (const error in out_errors) {
-                                if(rules.messages) {
-                                    if(rules.messages[`${validation_field}.${error}`]) {
-                                        out_errors[error] = rules.messages[`${validation_field}.${error}`];
-                                    } else if(rules.messages[error]) {
-                                        out_errors[error] = rules.messages[error];
-                                    }
-                                }
-                            }
-
-                            errors[validation_field] = out_errors;
-                        }
-                    }
-                }
+        for (const validation_field in field_errors){
+            if (field_errors.hasOwnProperty(validation_field)) {
+                errors[validation_field] = field_errors[validation_field];
             }
-        } catch (error) {
-            next(error);
+        }
+    }
+
+    protected fail(errors: any, req: ExpressRequest, res: Response, next: NextFunction)
+    {
+        if(accepts_json(req)) {
+
+            const exception = new Exception('Invalid request payload.', 422, errors);
+
+            return next(exception);
         }
 
-        if(Object.entries(errors).length == 0) {
-
-            return next();
-        } else {
-
-            if(accepts_json(req)) {
-
-                const exception = new Exception('Invalid request payload.', 422, errors);
-
-                return next(exception);
-            }
-
-            if(errors) {
-                (<any> req).flash('validation-errors', errors);
-            }
-
-            return res.redirect(req.header('Referer') || '/');
+        if(errors) {
+            (<any> req).flash('validation-errors', errors);
         }
+
+        return res.redirect(req.header('Referer') || '/');
+
+    }
+
+    protected parseRule(rule: string): RuleDefinition
+    {
+        let rule_sections = rule.split(':');
+
+        const rule_name = rule_sections[0];
+
+        let data = undefined;
+
+        for (let j = 1; j < rule_sections.length; j++) {
+            if(j == 1) {
+                data = rule_sections[j];
+            } else {
+                data = `${data}:${rule_sections[j]}`;
+            }
+        }
+
+        return {
+            rule: rule_name,
+            data: data
+        };
+    }
+
+    protected valueSet(value: any): boolean
+    {
+        return !([undefined, null, false, ''].includes(value));
     }
 
     protected async validateField(req: ExpressRequest, field: string, rules: string)
@@ -98,48 +97,21 @@ export default abstract class Request
         const is_required = rule_fragments.includes('required');
 
         for (let i = 0; i < rule_fragments.length; i++) {
-            let rule_sections = rule_fragments[i].split(':');
 
-            const rule = rule_sections[0];
+            const parsed_rule = this.parseRule(rule_fragments[i]);
 
-            let data = null
+            let validator_args = [field_value];
 
-            for (let j = 1; j < rule_sections.length; j++) {
-                if(j == 1) data = rule_sections[j];
-                else data = `${data}:${rule_sections[j]}`
-            }
+            if(parsed_rule.data !== undefined) validator_args.push(parsed_rule.data);
 
-            if(
-                !data && (
-                    is_required || field_value
-                )
-            ) {
-                const r = await this.rule_functions[rule](field_value);
 
-                if(r !== true) {
-                    if(!errors[field]) {
-                        errors[field] = {};
-                    }
+            if(is_required || this.valueSet(field_value)) {
+                const is_valid = await this.rule_functions[parsed_rule.rule](...validator_args);
 
-                    if(typeof r === 'string') {
-                        errors[field][rule] = r;
-                    } else {
-                        errors[field][rule] = this.getMessage(rule);
-                    }
-                }
-            } else if(is_required || field_value) {
-                const r = await this.rule_functions[rule](field_value, data);
+                if(is_valid !== true) {
+                    if(!errors[field]) errors[field] = {};
 
-                if(r !== true) {
-                    if(!errors[field]) {
-                        errors[field] = {};
-                    }
-
-                    if(typeof r === 'string') {
-                        errors[field][rule] = r;
-                    } else {
-                        errors[field][rule] = this.getMessage(rule);
-                    }
+                    errors[field][parsed_rule.rule] = this.getMessage(parsed_rule.rule);
                 }
             }
         }
@@ -163,6 +135,30 @@ export default abstract class Request
         }
 
         return result;
+    }
+
+    public validate = async (req: ExpressRequest, res: Response, next: NextFunction) =>
+    {
+        const rules = this.rules(req);
+
+        var errors: any = {};
+
+        try {
+            for (const field in rules.rules){
+                if (rules.rules.hasOwnProperty(field)) {
+                    const field_errors = await this.validateField(req, field, rules.rules[field]);
+
+                    this.mapErrors(errors, field_errors);
+                }
+            }
+        } catch (error) {
+
+            next(error);
+        }
+
+        if(Object.entries(errors).length == 0) return next();
+
+        return this.fail(errors, req, res, next);
     }
 
     protected abstract rules(req: ExpressRequest): RequestInterface;
