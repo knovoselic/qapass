@@ -1,10 +1,8 @@
-import expressSession from 'express-session';
 import cookieParser from 'cookie-parser';
 import flash from 'connect-flash';
 import passport from 'passport';
 import csurf from 'csurf';
-
-let FileStore = require('session-file-store')(expressSession);
+import cookieSession from 'cookie-session';
 
 let secret = 'secret';
 
@@ -12,14 +10,10 @@ if(process.env.APP_SECRET) {
     secret = process.env.APP_SECRET;
 }
 
-const session = expressSession({
-    secret: secret,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: 600000
-    },
-    store: new FileStore,
+const session = cookieSession({
+    name: 'session',
+    keys: [secret],
+    maxAge: 600000
 });
 
 passport.serializeUser((user: any, done) => {

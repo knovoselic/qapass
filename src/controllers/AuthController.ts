@@ -77,11 +77,6 @@ class AuthController extends BaseController implements interfaces.Controller
     {
         req.logout();
 
-        container.rebind<User|undefined>('AuthUser')
-            .toDynamicValue(() : User|undefined => {
-                return undefined;
-            });
-
         return res.redirect('/login');
     }
 }
