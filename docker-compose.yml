@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+
+    app:
+        image: codecons:prod
+        restart: always
+        container_name: code_cons_app
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - 8080:3000
+        links:
+            - mysql
+        depends_on:
+            - mysql
+        networks:
+            zadatak0:
+                aliases:
+                    - app
+
+    mysql:
+        image: mysql:5.7.25
+        restart: always
+        container_name: code_cons_mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: codecons
+            MYSQL_DATABASE: codecons
+            MYSQL_USER: codecons
+            MYSQL_PASSWORD: codecons
+        ports:
+            - 33061:3306
+        networks:
+            zadatak0:
+                aliases:
+                    - mysql
+
+networks:
+    zadatak0:

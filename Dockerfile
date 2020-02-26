@@ -4,11 +4,24 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN npm install
-RUN npm run build-dist
-RUN npm prune --production
-RUN rm -rf src
+RUN npm install && \
+    npm run build-dist && \
+    npm rm tsconfig.json \
+    npm prune --production && \
+    rm -rf src \
+    touch .env && \
+    echo "APP_ENV=production" >> .env && \
+    echo "APP_SECRET=codeconssecret" >> .env && \
+    echo "APP_RUN=dist" >> .env && \
+    echo "DB_HOST=mysql" >> .env && \
+    echo "DB_PORT=3306" >> .env && \
+    echo "DB_USERNAME=codecons" >> .env && \
+    echo "DB_PASSWORD=codecons" >> .env && \
+    echo "DB_DATABASE=codecons" >> .env && \
+    chown -R node:node /usr/src/app
 
-EXPOSE 80 
+USER node
 
-ENTRYPOINT npm run production
+EXPOSE 3000
+
+ENTRYPOINT npm run migration-run && npm run production
