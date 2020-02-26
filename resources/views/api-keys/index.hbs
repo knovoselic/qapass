@@ -1,56 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-</head>
-<body>
-    <a href="/">Account Manager</a>
-    <a href="/logout">Logout</a>
+Api Keys
+<br><br>
+<form method="POST" action="/api-keys/generate">
+    <input type="hidden" name="_csrf" value="{{csrf}}">
+    <input type="submit" value="Generate">
+</form>
+<br>
+{{#if generated}}
+    <p><b>New api key has been generated!<b><br>Please write down the secret because it will not be retrievable later.</p>
+    KEY: {{generated.key}}<br>
+    SECRET: {{generated.secret}}
     <br><br>
-    Api Keys
-    <br><br>
-    <form method="POST" action="/api-keys/generate">
-        <input type="hidden" name="_csrf" value="{{csrf}}">
-        <input type="submit" value="Generate">
-    </form>
-    <br>
-    {{#if generated}}
-        <p><b>New api key has been generated!<b><br>Please write down the secret because it will not be retrievable later.</p>
-        KEY: {{generated.key}}<br>
-        SECRET: {{generated.secret}}
-        <br><br>
-    {{/if}}
-    <br>
-    <table border="1">
-        <thead>
+{{/if}}
+<br>
+<table border="1">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Key
+            </th>
+            <th>
+                Last Usage At
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each api_keys}}
             <tr>
-                <th>
-                    ID
-                </th>
-                <th>
-                    Key
-                </th>
-                <th>
-                    Last Usage At
-                </th>
-                <th></th>
+                <td>{{this.id}}</td>
+                <td>{{this.key}}</td>
+                <td>{{this.last_usage_at}}</td>
+                <td>
+                    <form method="POST" action="/api-keys/{{this.id}}/delete">
+                        <input type="hidden" name="_csrf" value="{{../csrf}}">
+                        <input type="hidden" name="_method" value="delete">
+                        <input type="submit" value="Delete">
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            {{#each api_keys}}
-                <tr>
-                    <td>{{this.id}}</td>
-                    <td>{{this.key}}</td>
-                    <td>{{this.last_usage_at}}</td>
-                    <td>
-                        <form method="POST" action="/api-keys/{{this.id}}/delete">
-                            <input type="hidden" name="_csrf" value="{{../csrf}}">
-                            <input type="hidden" name="_method" value="delete">
-                            <input type="submit" value="Delete">
-                        </form>
-                    </td>
-                </tr>
-            {{/each}}
-        </tbody>
-    </table>
-</body>
-</html>
+        {{/each}}
+    </tbody>
+</table>

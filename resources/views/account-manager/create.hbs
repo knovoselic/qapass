@@ -1,66 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-</head>
-<body>
-    <a href="/">Account Manager</a>
-    <a href="/api-keys">Api Keys</a>
-    <a href="/logout">Logout</a>
-    <br><br>
-    Create Account
-    <br><br><br>
+Create Account
+<br><br><br>
 
-    <form action="/create" method="POST">
-        <label for="username">Username: </label>
-        <input type="username" name="username" id="username">
-        {{#if errors.username}}
-        <br>
-        {{#each errors.username}}
-        {{this}}<br>
-        {{/each}}
-        {{/if}}
-        <br><br>
-        <label for="account_password">Password: </label>
-        <input type="account_password" name="account_password" id="account_password">
-        {{#if errors.account_password}}
-        <br>
-        {{#each errors.account_password}}
-        {{this}}<br>
-        {{/each}}
-        {{/if}}
-        <br><br>
-        <label for="host">Host: </label>
-        <input type="host" name="host" id="host">
-        {{#if errors.host}}
-        <br>
-        {{#each errors.host}}
-        {{this}}<br>
-        {{/each}}
-        {{/if}}
-        <br><br>
-        <label for="description">Description: </label>
-        <input type="description" name="description" id="description">
-        {{#if errors.description}}
-        <br>
-        {{#each errors.description}}
-        {{this}}<br>
-        {{/each}}
-        {{/if}}
-        <br><br>
-        <label for="public">Public: </label>
-        <select id="public" name="public">
-            <option value="1">Yes</option>
-            <option value="0">No</option>
-        </select>
-        {{#if errors.public}}
-        <br>
-        {{#each errors.public}}
-        {{this}}<br>
-        {{/each}}
-        {{/if}}
-        <br><br>
-        <input type="hidden" name="_csrf" value="{{csrf}}">
-        <input type="submit" value="Submit">
-    </form>
-</body>
-</html>
+<form action="/create" method="POST">
+    <label for="username">Username: </label>
+    <input type="username" name="username" id="username">
+    {{#if errors.username}}
+    <br>
+    {{#each errors.username}}
+    {{this}}<br>
+    {{/each}}
+    {{/if}}
+    <br><br>
+    <label for="account_password">Password: </label>
+    <input type="account_password" name="account_password" id="account_password">
+    {{#if errors.account_password}}
+    <br>
+    {{#each errors.account_password}}
+    {{this}}<br>
+    {{/each}}
+    {{/if}}
+    <br><br>
+    <label for="host">Host: </label>
+    <input type="host" name="host" id="host">
+    {{#if errors.host}}
+    <br>
+    {{#each errors.host}}
+    {{this}}<br>
+    {{/each}}
+    {{/if}}
+    <br><br>
+    <label for="description">Description: </label>
+    <input type="description" name="description" id="description">
+    {{#if errors.description}}
+    <br>
+    {{#each errors.description}}
+    {{this}}<br>
+    {{/each}}
+    {{/if}}
+    <br><br>
+    <label for="public">Public: </label>
+    <select id="public" name="public">
+        <option value="1">Yes</option>
+        <option value="0">No</option>
+    </select>
+    {{#if errors.public}}
+    <br>
+    {{#each errors.public}}
+    {{this}}<br>
+    {{/each}}
+    {{/if}}
+    <br><br>
+    <input type="hidden" name="_csrf" value="{{csrf}}">
+    <input type="submit" value="Submit">
+</form>

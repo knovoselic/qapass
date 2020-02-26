@@ -1,56 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-</head>
-<body>
-    <a href="/api-keys">Api Keys</a>
-    <a href="/logout">Logout</a>
-    <br><br>
-    Account Manager
-    <br><br>
-    <a href="/create">Create</a>
-    <br><br>
-    <table border="1">
-        <thead>
+Account Manager
+<br><br>
+<a href="/create">Create</a>
+<br><br>
+<table border="1">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Username
+            </th>
+            <th>
+                Password
+            </th>
+            <th>
+                Host
+            </th>
+            <th>
+                Description
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each accounts}}
             <tr>
-                <th>
-                    ID
-                </th>
-                <th>
-                    Username
-                </th>
-                <th>
-                    Password
-                </th>
-                <th>
-                    Host
-                </th>
-                <th>
-                    Description
-                </th>
-                <th></th>
-                <th></th>
+                <td>{{this.id}}</td>
+                <td>{{this.username}}</td>
+                <td>{{this.password}}</td>
+                <td>{{this.host}}</td>
+                <td>{{this.description}}</td>
+                <td><a href="/{{this.id}}/edit">Edit</a></td>
+                <td>
+                    <form method="POST" action="/{{this.id}}/delete">
+                        <input type="hidden" name="_csrf" value="{{../csrf}}">
+                        <input type="hidden" name="_method" value="delete">
+                        <input type="submit" value="Delete">
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            {{#each accounts}}
-                <tr>
-                    <td>{{this.id}}</td>
-                    <td>{{this.username}}</td>
-                    <td>{{this.password}}</td>
-                    <td>{{this.host}}</td>
-                    <td>{{this.description}}</td>
-                    <td><a href="/{{this.id}}/edit">Edit</a></td>
-                    <td>
-                        <form method="POST" action="/{{this.id}}/delete">
-                            <input type="hidden" name="_csrf" value="{{../csrf}}">
-                            <input type="hidden" name="_method" value="delete">
-                            <input type="submit" value="Delete">
-                        </form>
-                    </td>
-                </tr>
-            {{/each}}
-        </tbody>
-    </table>
-</body>
-</html>
+        {{/each}}
+    </tbody>
+</table>

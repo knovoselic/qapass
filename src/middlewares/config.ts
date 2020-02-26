@@ -7,7 +7,7 @@ import * as bodyParser from 'body-parser';
 
 const hbs = exphbs.create({
     extname: 'hbs',
-    defaultLayout: '',
+    defaultLayout: 'layout.hbs',
     layoutsDir: path.resolve(`${__dirname}/../../resources/views`),
     partialsDir: path.resolve(`${__dirname}/../../resources/views`),
     helpers: {

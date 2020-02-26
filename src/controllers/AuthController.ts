@@ -30,6 +30,7 @@ class AuthController extends BaseController implements interfaces.Controller
     public async showRegisterForm(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         return this.render(res, 'register', {
+            layout: false,
             csrf: req.csrfToken(),
             errors: validation_errors(req),
             error: req.flash('error')
@@ -53,6 +54,7 @@ class AuthController extends BaseController implements interfaces.Controller
     public async showLoginForm(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         return this.render(res, 'login', {
+            layout: false,
             csrf: req.csrfToken(),
             errors: validation_errors(req),
             error: req.flash('error')

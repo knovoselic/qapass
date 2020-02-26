@@ -29,7 +29,7 @@ class ErrorHandler
 
         return res
             .status(err.status)
-            .render('error', {message: err.message, errors: err.errors})
+            .render('error', {message: err.message, errors: err.errors, layout: false})
 
     };
 }
