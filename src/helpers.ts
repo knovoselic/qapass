@@ -56,3 +56,13 @@ export const auth_user = async (req: Request, fail: boolean = true): Promise<Use
 
     return user_instance;
 }
+
+export const date_to_string = (date: Date) => {
+    const day = ("0" + date.getDate()).slice(-2);
+
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+
+    const year = date.getFullYear();
+
+    return year + "-" + month + "-" + day + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+}

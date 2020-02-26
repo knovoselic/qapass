@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Container } from "inversify";
 import ApiKey from "../entity/ApiKey";
 import { Connection } from "typeorm";
+import { date_to_string } from "../helpers";
 
 const unauthorized = (res: Response) => {
 
@@ -34,6 +35,10 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     }]});
 
     if(!record) return unauthorized(res);
+
+    await apiKeyRepository.update(record, {
+        last_usage_at: date_to_string(new Date)
+    });
 
     req.user = record.user_id;
 

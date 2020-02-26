@@ -13,6 +13,7 @@ RUN npm install && \
     echo "APP_ENV=production" >> .env && \
     echo "APP_SECRET=codeconssecret" >> .env && \
     echo "APP_RUN=dist" >> .env && \
+    echo "TZ=\"Europe/Zagreb\"" >> .env && \
     echo "DB_HOST=mysql" >> .env && \
     echo "DB_PORT=3306" >> .env && \
     echo "DB_USERNAME=codecons" >> .env && \
