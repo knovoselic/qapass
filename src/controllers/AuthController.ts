@@ -7,13 +7,8 @@ import { Request, Response, NextFunction } from 'express';
 import guest from '../middlewares/guest';
 import registerRequest from '../requests/RegisterRequest';
 import loginRequest from '../requests/LoginRequest';
-import csurf from 'csurf';
-import bodyParser from 'body-parser';
 import { validation_errors } from '../helpers';
 import { authenticated } from "../middlewares/authenticated";
-
-const csrf = csurf({ cookie: true });
-const parseForm = bodyParser.urlencoded({ extended: false })
 
 @controller('')
 class AuthController extends BaseController implements interfaces.Controller
@@ -30,7 +25,7 @@ class AuthController extends BaseController implements interfaces.Controller
         passport.use('register', auth.register());
     }
 
-    @httpGet('/register', guest, csrf)
+    @httpGet('/register', guest)
     public async showRegisterForm(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         return this.render(res, 'register', {
@@ -41,7 +36,7 @@ class AuthController extends BaseController implements interfaces.Controller
     }
 
     @httpPost(
-        '/register', guest, parseForm, csrf, registerRequest,
+        '/register', guest, registerRequest,
         passport.authenticate('register', {
             session: true,
             failureRedirect: '/register',
@@ -53,7 +48,7 @@ class AuthController extends BaseController implements interfaces.Controller
         return res.redirect('/');
     }
 
-    @httpGet('/login', guest, csrf)
+    @httpGet('/login', guest)
     public async showLoginForm(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         return this.render(res, 'login', {
@@ -64,7 +59,7 @@ class AuthController extends BaseController implements interfaces.Controller
     }
 
     @httpPost(
-        '/login', guest, parseForm, csrf,
+        '/login', guest,
         loginRequest,passport.authenticate('login', {
             session: true,
             failureRedirect: '/login',

@@ -2,17 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import { interfaces, controller, httpGet, request, response, next, httpDelete, httpPost, requestParam } from 'inversify-express-utils';
 import BaseController from './BaseController';
 import { authenticated } from '../middlewares/authenticated';
-import csurf from 'csurf';
-import bodyParser from 'body-parser';
 import { Connection, Repository } from 'typeorm';
 import ApiKey from '../entity/ApiKey';
 import { inject } from 'inversify';
 import { auth_user } from '../helpers';
 import Exception from '../errors/Exception';
 import ApiKeyListTransformer from '../transformers/ApiKeyListTransformer';
-
-const csrf = csurf({ cookie: true });
-const parseForm = bodyParser.urlencoded({ extended: false })
 
 @controller('/api-keys')
 class ApiKeyController extends BaseController implements interfaces.Controller
@@ -35,7 +30,7 @@ class ApiKeyController extends BaseController implements interfaces.Controller
         this.apiKeyListTransformer = apiKeyListTransformer;
     }
 
-    @httpGet('/', authenticated, csrf)
+    @httpGet('/', authenticated)
     public async index(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
@@ -59,7 +54,7 @@ class ApiKeyController extends BaseController implements interfaces.Controller
         });
     }
 
-    @httpPost('/generate', authenticated, parseForm, csrf)
+    @httpPost('/generate', authenticated)
     public async generate(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
@@ -83,7 +78,7 @@ class ApiKeyController extends BaseController implements interfaces.Controller
         return res.redirect('/api-keys');
     }
 
-    @httpDelete('/:id/delete', authenticated, parseForm, csrf)
+    @httpDelete('/:id/delete', authenticated)
     public async delete(@requestParam('id') id: string, @request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);

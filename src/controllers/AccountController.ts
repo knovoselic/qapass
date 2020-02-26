@@ -7,12 +7,7 @@ import Account from '../entity/Account';
 import { inject } from 'inversify';
 import { auth_user, validation_errors } from '../helpers';
 import Exception from '../errors/Exception';
-import csurf from 'csurf';
-import bodyParser from 'body-parser';
 import upsertAccountRequest from '../requests/UpsertAccountRequest';
-
-const csrf = csurf({ cookie: true });
-const parseForm = bodyParser.urlencoded({ extended: false })
 
 @controller('')
 class AccountController extends BaseController implements interfaces.Controller
@@ -32,7 +27,7 @@ class AccountController extends BaseController implements interfaces.Controller
         this.accountRepository = typeorm.getRepository(Account);
     }
 
-    @httpGet('/', authenticated, csrf)
+    @httpGet('/', authenticated)
     public async index(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
@@ -51,7 +46,7 @@ class AccountController extends BaseController implements interfaces.Controller
         });
     }
 
-    @httpGet('/create', authenticated, csrf)
+    @httpGet('/create', authenticated)
     public async create(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         return this.render(res, 'account-manager/create', {
@@ -59,7 +54,7 @@ class AccountController extends BaseController implements interfaces.Controller
         });
     }
 
-    @httpPost('/create', authenticated, parseForm, csrf, upsertAccountRequest)
+    @httpPost('/create', authenticated, upsertAccountRequest)
     public async store(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
@@ -82,7 +77,7 @@ class AccountController extends BaseController implements interfaces.Controller
         return res.redirect('/');
     }
 
-    @httpGet('/:id/edit', authenticated, csrf)
+    @httpGet('/:id/edit', authenticated)
     public async edit(@requestParam('id') id: string, @request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
@@ -108,7 +103,7 @@ class AccountController extends BaseController implements interfaces.Controller
         });
     }
 
-    @httpPut('/:id/edit', authenticated, parseForm, csrf, upsertAccountRequest)
+    @httpPut('/:id/edit', authenticated, upsertAccountRequest)
     public async update(@requestParam('id') id: string, @request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
@@ -134,7 +129,7 @@ class AccountController extends BaseController implements interfaces.Controller
         return res.redirect('/');
     }
 
-    @httpDelete('/:id/delete', authenticated, parseForm, csrf)
+    @httpDelete('/:id/delete', authenticated)
     public async delete(@requestParam('id') id: string, @request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
