@@ -3,6 +3,7 @@ import { Container } from "inversify";
 import knexConnection  from "knex";
 import User from './entity/User';
 import { Connection } from 'typeorm';
+import Exception from "./errors/Exception";
 
 export const accepts_json = (req: Request): Boolean => {
     if (req.xhr || (req.headers.accept && req.headers.accept.indexOf('json') > -1)) {
@@ -36,15 +37,22 @@ export const getFlash = (req: Request, identifier: string) => {
     return flash[0];
 }
 
-export const auth_user = async (req: Request) => {
+export const user = async (req: Request) => {
 
-    if(!req.user) return null;
+    if(!req.user) return undefined;
 
-    let container: Container = global.container;
+    const container: Container = global.container;
 
-    const connection = container.get<Connection>('typeorm');
+    return await container.get<Connection>('typeorm')
+        .getRepository(User)
+        .findOne(req.user);
+}
 
-    const user = await connection.getRepository(User).findOne(req.user);
+export const auth_user = async (req: Request, fail: boolean = true): Promise<User> => {
 
-    return user;
+    const user_instance = await user(req);
+
+    if(!user_instance) throw new Exception('Internal server error.', 500);
+
+    return user_instance;
 }

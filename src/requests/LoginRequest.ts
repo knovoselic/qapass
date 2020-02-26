@@ -8,8 +8,8 @@ class LoginRequest extends BaseRequest
     {
         return {
             rules: {
-                'email': 'required|email|max:250',
-                'password': 'required|string|max:250',
+                'email': 'required|email|max:255',
+                'password': 'required|string|max:255',
             }
         }
     }

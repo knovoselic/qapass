@@ -32,8 +32,6 @@ class AccountController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        if(!user) throw new Exception('Internal server error.');
-
         const accounts = await this.accountRepository.find({where: [
             {user_id: user.id},
             {public: true},
@@ -51,6 +49,7 @@ class AccountController extends BaseController implements interfaces.Controller
     {
         return this.render(res, 'account-manager/create', {
             csrf: req.csrfToken(),
+            errors: validation_errors(req)
         });
     }
 
@@ -58,8 +57,6 @@ class AccountController extends BaseController implements interfaces.Controller
     public async store(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
-
-        if(!user) throw new Exception('Internal server error.');
 
         try {
             await this.accountRepository.save({
@@ -71,7 +68,7 @@ class AccountController extends BaseController implements interfaces.Controller
                 public: req.body.public,
             });
         } catch (error) {
-            throw new Exception('Internal error.', 404);
+            throw new Exception('Internal error.', 500);
         }
 
         return res.redirect('/');
@@ -81,8 +78,6 @@ class AccountController extends BaseController implements interfaces.Controller
     public async edit(@requestParam('id') id: string, @request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
-
-        if(!user) throw new Exception('Internal server error.');
 
         let account = null;
 
@@ -108,8 +103,6 @@ class AccountController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        if(!user) throw new Exception('Internal server error.');
-
         const account = await this.accountRepository.findOne(id, {where: [
             {user_id: user.id},
             {public: true},
@@ -133,8 +126,6 @@ class AccountController extends BaseController implements interfaces.Controller
     public async delete(@requestParam('id') id: string, @request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
-
-        if(!user) throw new Exception('Internal server error.');
 
         const account = await this.accountRepository.findOne(id, {where: [
             {user_id: user.id},

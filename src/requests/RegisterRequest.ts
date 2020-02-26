@@ -13,8 +13,8 @@ class RegisterRequest extends BaseRequest
 
         return {
             rules: {
-                'email': 'required|email|max:250|unique:'+JSON.stringify(unique_email),
-                'password': 'required|string|max:250',
+                'email': 'required|email|max:255|unique:'+JSON.stringify(unique_email),
+                'password': 'required|string|max:255',
             }
         }
     }

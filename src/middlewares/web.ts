@@ -4,13 +4,13 @@ import flash from 'connect-flash';
 import passport from 'passport';
 import csurf from 'csurf';
 
+let FileStore = require('session-file-store')(expressSession);
+
 let secret = 'secret';
 
 if(process.env.APP_SECRET) {
     secret = process.env.APP_SECRET;
 }
-
-let MemoryStore = require('memorystore')(expressSession);
 
 const session = expressSession({
     secret: secret,
@@ -19,9 +19,7 @@ const session = expressSession({
     cookie: {
         maxAge: 600000
     },
-    store: new MemoryStore({
-        checkPeriod: 86400000
-    }),
+    store: new FileStore,
 });
 
 passport.serializeUser((user: any, done) => {

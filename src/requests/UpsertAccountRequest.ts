@@ -9,10 +9,10 @@ class UpsertAccountRequest extends BaseRequest
 
         return {
             rules: {
-                'username': 'required|max:250',
-                'account_password': 'required|max:250',
-                'host': 'required|max:250',
-                'description': 'required|max:250',
+                'username': 'required|max:255',
+                'account_password': 'required|max:255',
+                'host': 'required|max:255',
+                'description': 'required|max:255',
                 'public': 'required|in:0,1',
             }
         }

@@ -9,6 +9,7 @@ import registerRequest from '../requests/RegisterRequest';
 import loginRequest from '../requests/LoginRequest';
 import { validation_errors } from '../helpers';
 import { authenticated } from "../middlewares/authenticated";
+import User from "../entity/User";
 
 @controller('')
 class AuthController extends BaseController implements interfaces.Controller
@@ -75,6 +76,11 @@ class AuthController extends BaseController implements interfaces.Controller
     public async logout(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         req.logout();
+
+        container.rebind<User|undefined>('AuthUser')
+            .toDynamicValue(() : User|undefined => {
+                return undefined;
+            });
 
         return res.redirect('/login');
     }

@@ -35,8 +35,6 @@ class ApiKeyController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        if(!user) throw new Exception('Internal server error.');
-
         let api_keys = await this.apiKeyRepository.find({where: [
             {user_id: user.id},
         ]});
@@ -59,8 +57,6 @@ class ApiKeyController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        if(!user) throw new Exception('Internal server error.');
-
         let api_key = null;
 
         try {
@@ -70,7 +66,7 @@ class ApiKeyController extends BaseController implements interfaces.Controller
                 secret: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
             });
         } catch (error) {
-            throw new Exception('Internal error.', 404);
+            throw new Exception('Internal error.', 500);
         }
 
         req.flash('generated', JSON.stringify(api_key));
@@ -82,8 +78,6 @@ class ApiKeyController extends BaseController implements interfaces.Controller
     public async delete(@requestParam('id') id: string, @request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
-
-        if(!user) throw new Exception('Internal server error.');
 
         const api_key = await this.apiKeyRepository.findOne(id, {where: [
             {user_id: user.id},

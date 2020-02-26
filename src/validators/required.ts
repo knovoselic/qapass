@@ -1,6 +1,6 @@
 export default (subject: any) => {
 
-    if(!subject) {
+    if([undefined, null, false, ''].includes(subject)) {
 
         return false;
     }
