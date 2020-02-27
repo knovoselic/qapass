@@ -2,16 +2,16 @@ import { Request, Response, NextFunction } from 'express';
 import { interfaces, controller, httpGet, request, response, next } from 'inversify-express-utils';
 import BaseController from './BaseController';
 import { auth_user } from '../helpers';
-import { Connection, Repository } from 'typeorm';
+import { Connection, getCustomRepository } from 'typeorm';
 import { inject } from 'inversify';
 import AccountFilter from '../filters/AccountFilter';
-import Account from '../entity/Account';
 import AccountListTransformer from '../transformers/AccountListTransformer';
+import AccountRepository from '../repositories/AccountRepository';
 
 @controller('/api')
 class ApiController extends BaseController implements interfaces.Controller
 {
-    protected accountRepository: Repository<Account>;
+    protected accountRepository: AccountRepository;
     protected accountFilter: AccountFilter;
     protected typeorm: Connection;
     protected accountListTransformer: AccountListTransformer;
@@ -23,7 +23,7 @@ class ApiController extends BaseController implements interfaces.Controller
     ) {
         super();
 
-        this.accountRepository = typeorm.getRepository(Account);
+        this.accountRepository = getCustomRepository(AccountRepository);
         this.accountFilter = accountFilter;
         this.typeorm = typeorm;
         this.accountListTransformer = accountListTransformer;
@@ -34,14 +34,11 @@ class ApiController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        let where_options: any = this.accountFilter.whereOptions(req);
+        const accounts = await this.accountRepository
+            .filter(req, this.accountFilter)
+            .ownedByUserOrPublic(user.id);
 
-        const accounts = await this.accountRepository.find({where: [
-            {...where_options, ...{user_id: user.id}},
-            {...where_options, ...{public: true}},
-        ]});
-
-        return res.status(401)
+        return res.status(200)
             .json(this.accountListTransformer.transformArray(accounts));
     }
 }

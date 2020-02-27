@@ -1,8 +1,9 @@
 import { injectable } from 'inversify';
 import { Request } from 'express';
+import Filter from '../contracts/abstractions/Filter';
 
 @injectable()
-export default class AccountFilter
+export default class AccountFilter extends Filter
 {
     protected allowed = [
         'host'
@@ -19,5 +20,12 @@ export default class AccountFilter
         }
 
         return where_options;
+    }
+
+    public host(host: any = false)
+    {
+        if(!host) return;
+
+        this.sqb.where('host = :host', {host: host});
     }
 }
