@@ -48,7 +48,7 @@ export const user = async (req: Request) => {
         .findOne(req.user);
 }
 
-export const auth_user = async (req: Request, fail: boolean = true): Promise<User> => {
+export const auth_user = async (req: Request): Promise<User> => {
 
     const user_instance = await user(req);
 
@@ -58,11 +58,27 @@ export const auth_user = async (req: Request, fail: boolean = true): Promise<Use
 }
 
 export const date_to_string = (date: Date) => {
-    const day = ("0" + date.getDate()).slice(-2);
+    var day = date.getDate() + "";
+    var month = (date.getMonth() + 1) + "";
+    var year = date.getFullYear() + "";
+    var hour = date.getHours() + "";
+    var minutes = date.getMinutes() + "";
+    var seconds = date.getSeconds() + "";
 
-    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const checkZero = (e: any) => {
+        if(e.length == 1){
+            e = "0" + e;
+        }
 
-    const year = date.getFullYear();
+        return e;
+    }
 
-    return year + "-" + month + "-" + day + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    day = checkZero(day);
+    month = checkZero(month);
+    year = checkZero(year);
+    hour = checkZero(hour);
+    minutes = checkZero(minutes);
+    seconds = checkZero(seconds);
+
+    return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
 }
