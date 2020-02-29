@@ -1,11 +1,14 @@
 import { knex } from "../helpers";
 import Exception from "../errors/Exception";
 import { Validator } from 'jsonschema';
+import { AdvancedConsoleLogger } from "typeorm";
 
 export default async (subject: any, schema: any) => {
-    schema = JSON.parse(schema);
-
-    if(typeof schema !== 'object') throw new Exception('Unique exists schema.');
+    try {
+        schema = JSON.parse(schema);
+    } catch (error) {
+        throw new Exception('Invalid exists schema.');
+    }
 
     const validation_schema = {
         id: "UniqueSchema",
