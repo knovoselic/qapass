@@ -36,5 +36,21 @@ services:
               aliases:
                   - ${DB_HOST}
 
+  mysql_test:
+      image: mysql:5.7.25
+      restart: unless-stopped
+      container_name: code_cons_mysql_test
+      environment:
+          MYSQL_ROOT_PASSWORD: ${DB_TEST_PASSWORD}
+          MYSQL_DATABASE: ${DB_TEST_DATABASE}
+          MYSQL_USER: ${DB_TEST_USERNAME}
+          MYSQL_PASSWORD: ${DB_TEST_PASSWORD}
+      ports:
+          - 33062:3306
+      networks:
+          zadatak0:
+              aliases:
+                  - ${DB_TEST_HOST}
+
 networks:
   zadatak0:
