@@ -5,13 +5,6 @@ import { Connection } from 'typeorm';
 import { Container } from 'inversify';
 
 describe('Function unique should', () => {
-    beforeEach(async () => {
-        const container = global.container as Container;
-
-        const knex_connection = container.get<knexConnection>('knex');
-
-        await knex_connection.table('users').delete();
-    });
     it("throw error when second argument is not string processable by json parse", async () => {
         await expect(unique('any', 'random')).rejects.toThrowError('Invalid exists schema.');
     });

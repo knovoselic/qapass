@@ -7,7 +7,7 @@ import User from "./User";
 export default class ApiKey {
 
     @PrimaryGeneratedColumn()
-    id: any;
+    id: number;
 
     @Column('varchar')
     key: string;

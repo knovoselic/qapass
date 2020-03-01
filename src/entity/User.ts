@@ -9,7 +9,7 @@ import ApiKey from "./ApiKey";
 export default class User {
 
     @PrimaryGeneratedColumn()
-    id: any;
+    id: number;
 
     @Column('varchar')
     email: string;

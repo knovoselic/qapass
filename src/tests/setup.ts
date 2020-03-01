@@ -8,7 +8,7 @@ process.env.DB_USERNAME = process.env.DB_TEST_USERNAME;
 process.env.DB_PASSWORD = process.env.DB_TEST_PASSWORD;
 process.env.DB_DATABASE = process.env.DB_TEST_DATABASE;
 
-async function clearDB() {
+export async function clearDB() {
     const container = global.container as Container;
 
     const knex_connection = container.get<knexConnection>('knex');
@@ -25,5 +25,3 @@ beforeAll(async () => {
 });
 
 afterEach(async () => await clearDB());
-afterAll(async () => await clearDB());
-

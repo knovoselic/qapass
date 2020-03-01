@@ -7,7 +7,7 @@ import User from "./User";
 export default class Account {
 
     @PrimaryGeneratedColumn()
-    id: any;
+    id: number;
 
     @Column('varchar')
     username: string;

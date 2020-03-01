@@ -10,9 +10,9 @@
     "migration-run": "./node_modules/.bin/knex migrate:latest",
     "migration-revert": "./node_modules/.bin/knex migrate:rollback",
     "build-dist": "./node_modules/.bin/tsc",
-    "test": "./node_modules/.bin/jest",
+    "test": "./node_modules/.bin/jest --runInBand --detectOpenHandles --forceExit",
     "test-watch": "./node_modules/.bin/jest --watchAll",
-    "coverage": "./node_modules/.bin/jest --coverage"
+    "coverage": "./node_modules/.bin/jest --runInBand --detectOpenHandles --forceExit --coverage"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",

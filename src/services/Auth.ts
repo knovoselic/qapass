@@ -1,4 +1,5 @@
-import { Strategy as LocalStrategy } from 'passport-local';
+import { Strategy as LocalStrategy, IVerifyOptions, VerifyFunctionWithRequest } from 'passport-local';
+import { Request } from 'express';
 import User from '../entity/User';
 import { inject } from 'inversify';
 import { Connection, Repository } from 'typeorm';
@@ -20,39 +21,70 @@ class Auth
         this.userRepository = typeorm.getRepository(User);
     }
 
+    public async loginStrategyCallback(req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void)
+    {
+        const promise = new Promise(async (res, rej) => {
+
+            const user = await this.userRepository.findOne({'email': email});
+
+            if(!user){
+                rej(new Exception('Invalid email or password.', 401));
+            } else {
+                const valid = await user.validatePassword(password);
+
+                if(!valid){
+                    rej(new Exception('Invalid email or password.', 401));
+                }
+
+                res(user);
+            }
+        });
+
+        return promise
+            .then(fulfilled => {
+                done(null,fulfilled);
+            })
+            .catch(rejected => {
+                done(null, false, {message: rejected.message});
+            });
+    }
+
     public login()
     {
         return new LocalStrategy({
             usernameField: 'email',
             passwordField: 'password',
             passReqToCallback: true
-        }, async (req, email, password, done) => {
+        }, this.loginStrategyCallback);
+    }
 
-            const promise = new Promise(async (res, rej) => {
+    public async registerStrategyCallback(req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void)
+    {
+        const promise = new Promise(async (res, rej) => {
+            const salt = bcrypt.genSaltSync(10);
+            const hash = bcrypt.hashSync(password, salt);
 
-                const user = await this.userRepository.findOne({'email': email});
+            this.user.email = email;
+            this.user.password = hash;
 
-                if(!user){
-                    rej(new Exception('Invalid email or password.', 401));
-                } else {
-                    const valid = await user.validatePassword(password);
+            try {
+                this.user = await this.userRepository.save(this.user);
+            } catch (error) {
 
-                    if(!valid){
-                        rej(new Exception('Invalid email or password.', 401));
-                    }
+                return rej(error);
+            }
 
-                    res(user);
-                }
+            return res(this.user);
+        })
+
+        return promise
+            .then(fulfilled => {
+
+                done(null,fulfilled);
+            })
+            .catch(rejected => {
+                done(null, false, {message: rejected.message});
             });
-
-            promise
-                .then(fulfilled => {
-                    done(null,fulfilled);
-                })
-                .catch(rejected => {
-                    done(null, false, {message: rejected.message});
-                });
-        });
     }
 
     public register()
@@ -61,33 +93,7 @@ class Auth
             usernameField: 'email',
             passwordField: 'password',
             passReqToCallback: true
-            }, (req, email, password, done) => {
-
-                const promise = new Promise(async (res, rej) => {
-                    const salt = bcrypt.genSaltSync(10);
-                    const hash = bcrypt.hashSync(password, salt);
-
-                    this.user.email = email;
-                    this.user.password = hash;
-
-                    try {
-                        this.user = await this.userRepository.save(this.user);
-                    } catch (error) {
-                        return rej(error);
-                    }
-
-                    return res(this.user);
-                })
-
-                return promise
-                    .then(fulfilled => {
-
-                        done(null,fulfilled);
-                    })
-                    .catch(rejected => {
-                        done(null, false, {message: rejected.message});
-                    });
-        });
+        }, this.registerStrategyCallback);
     }
 }
 
