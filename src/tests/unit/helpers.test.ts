@@ -10,7 +10,7 @@ describe('Function date_to_string should', () => {
     it("return YYYY-MM-DD HH:ii:ss format", async () => {
         const date = new Date(2020, 1, 2, 2, 2, 2);
 
-        expect(date_to_string(date)).toEqual('2020-02-02 02:02:02');
+        expect(date_to_string(date)).toBe('2020-02-02 02:02:02');
     });
 });
 
@@ -23,7 +23,7 @@ describe('Function accepts_json should', () => {
             } as IncomingHttpHeaders
         } as Request;
 
-        expect(accepts_json(req)).toEqual(true);
+        expect(accepts_json(req)).toBe(true);
     });
     it("return true for xhr request", async () => {
         const req = {
@@ -33,7 +33,7 @@ describe('Function accepts_json should', () => {
             } as IncomingHttpHeaders
         } as Request;
 
-        expect(accepts_json(req)).toEqual(true);
+        expect(accepts_json(req)).toBe(true);
     });
     it("returns true if both application/json header and xhr request", async () => {
         const req = {
@@ -43,7 +43,7 @@ describe('Function accepts_json should', () => {
             } as IncomingHttpHeaders
         } as Request;
 
-        expect(accepts_json(req)).toEqual(true);
+        expect(accepts_json(req)).toBe(true);
     });
     it("returns false if no application/json header or xhr request", async () => {
         const req = {
@@ -53,7 +53,7 @@ describe('Function accepts_json should', () => {
             } as IncomingHttpHeaders
         } as Request;
 
-        expect(accepts_json(req)).toEqual(false);
+        expect(accepts_json(req)).toBe(false);
     });
 });
 
@@ -68,18 +68,11 @@ describe('Function knex should', () => {
 });
 
 describe('Function user should', () => {
-    beforeEach(async () => {
-        const container = global.container as Container;
-
-        const knex_connection = container.get<knexConnection>('knex');
-
-        return await knex_connection.table('users').delete();
-    });
     it("return undefined for empty req.user value", async () => {
         const req = {
         } as Request;
 
-        expect(await user(req)).toEqual(undefined);
+        expect(await user(req)).toBe(undefined);
     });
     it("return undefined for non exitant req.user value", async () => {
         const req = {
@@ -109,13 +102,6 @@ describe('Function user should', () => {
 });
 
 describe('Function auth_user should', () => {
-    beforeAll(async () => {
-        const container = global.container as Container;
-
-        const knex_connection = container.get<knexConnection>('knex');
-
-        return await knex_connection.table('users').delete();
-    });
     it("throw error for empty req.user value", async () => {
         const req = {
         } as Request;

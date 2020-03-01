@@ -10,7 +10,7 @@ describe('Function unique should', () => {
 
         const knex_connection = container.get<knexConnection>('knex');
 
-        return await knex_connection.table('users').delete();
+        await knex_connection.table('users').delete();
     });
     it("throw error when second argument is not string processable by json parse", async () => {
         await expect(unique('any', 'random')).rejects.toThrowError('Invalid exists schema.');
@@ -31,13 +31,13 @@ describe('Function unique should', () => {
 
         const typeorm = container.get<Connection>('typeorm');
 
-        const u = await typeorm.getRepository(User).save({
+        const usr = await typeorm.getRepository(User).save({
             email: 'test@test.com',
             password: '123123'
         });
 
         expect(
-            await unique(u.email, JSON.stringify({
+            await unique(usr.email, JSON.stringify({
                 table: 'users',
                 column: 'email'
             }))
