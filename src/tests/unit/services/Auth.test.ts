@@ -5,7 +5,7 @@ import { Connection, createConnection } from 'typeorm';
 import { Container } from 'inversify';
 import Auth from '../../../services/Auth';
 
-describe('Auth.loginStrategyCallback should', () => {
+describe('Auth.login should', () => {
     it("resolve to error on non existing email", async () => {
         const container: Container = global.container;
 
@@ -13,7 +13,7 @@ describe('Auth.loginStrategyCallback should', () => {
 
         const done = jest.fn();
 
-        await auth.loginStrategyCallback(
+        await auth.login(
             <Request> {},
             'non@existing.email',
             '123123',
@@ -44,7 +44,7 @@ describe('Auth.loginStrategyCallback should', () => {
 
         const done = jest.fn();
 
-        await auth.loginStrategyCallback(
+        await auth.login(
             <Request> {},
             usr.email,
             pass + '1',
@@ -78,7 +78,7 @@ describe('Auth.loginStrategyCallback should', () => {
 
         const done = jest.fn();
 
-        await auth.loginStrategyCallback(
+        await auth.login(
             <Request> {},
             email,
             pass,
@@ -90,7 +90,7 @@ describe('Auth.loginStrategyCallback should', () => {
     });
 });
 
-describe('Auth.registerStrategyCallback should', () => {
+describe('Auth.register should', () => {
     it("resolve to user if no db connection error", async () => {
         const container: Container = global.container;
 
@@ -102,7 +102,7 @@ describe('Auth.registerStrategyCallback should', () => {
 
         const email = 'test@test.com';
 
-        await auth.registerStrategyCallback(
+        await auth.register(
             <Request> {},
             email,
             '123123',
@@ -150,7 +150,7 @@ describe('Auth.registerStrategyCallback should', () => {
 
         });
 
-        await auth.registerStrategyCallback(
+        await auth.register(
             <Request> {},
             email,
             pass,

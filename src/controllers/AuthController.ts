@@ -9,6 +9,8 @@ import registerRequest from '../requests/RegisterRequest';
 import loginRequest from '../requests/LoginRequest';
 import { validation_errors } from '../helpers';
 import authenticated from "../middlewares/authenticated";
+import { Strategy as LocalStrategy, IVerifyOptions } from 'passport-local';
+
 
 @controller('')
 class AuthController extends BaseController implements interfaces.Controller
@@ -21,8 +23,17 @@ class AuthController extends BaseController implements interfaces.Controller
 
         this.auth = auth;
 
-        passport.use('login', auth.login());
-        passport.use('register', auth.register());
+        passport.use('login', new LocalStrategy({
+            usernameField: 'email',
+            passwordField: 'password',
+            passReqToCallback: true
+        }, auth.login));
+
+        passport.use('register', new LocalStrategy({
+            usernameField: 'email',
+            passwordField: 'password',
+            passReqToCallback: true
+        }, auth.register));
     }
 
     @httpGet('/register', guest)

@@ -1,4 +1,4 @@
-import { Strategy as LocalStrategy, IVerifyOptions, VerifyFunctionWithRequest } from 'passport-local';
+import { Strategy as LocalStrategy, IVerifyOptions } from 'passport-local';
 import { Request } from 'express';
 import User from '../entity/User';
 import { inject } from 'inversify';
@@ -21,7 +21,7 @@ class Auth
         this.userRepository = typeorm.getRepository(User);
     }
 
-    public async loginStrategyCallback(req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void)
+    public async login(req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void)
     {
         const promise = new Promise(async (res, rej) => {
 
@@ -49,16 +49,7 @@ class Auth
             });
     }
 
-    public login()
-    {
-        return new LocalStrategy({
-            usernameField: 'email',
-            passwordField: 'password',
-            passReqToCallback: true
-        }, this.loginStrategyCallback);
-    }
-
-    public async registerStrategyCallback(req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void)
+    public async register(req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void)
     {
         const promise = new Promise(async (res, rej) => {
             const salt = bcrypt.genSaltSync(10);
@@ -85,15 +76,6 @@ class Auth
             .catch(rejected => {
                 done(null, false, {message: rejected.message});
             });
-    }
-
-    public register()
-    {
-        return new LocalStrategy({
-            usernameField: 'email',
-            passwordField: 'password',
-            passReqToCallback: true
-        }, this.registerStrategyCallback);
     }
 }
 

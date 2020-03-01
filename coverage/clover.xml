@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1583074211544" clover="3.2.0">
-  <project timestamp="1583074211545" name="All files">
-    <metrics statements="474" coveredstatements="307" conditionals="120" coveredconditionals="55" methods="100" coveredmethods="48" elements="694" coveredelements="410" complexity="0" loc="474" ncloc="474" packages="13" files="32" classes="32"/>
+<coverage generated="1583091195203" clover="3.2.0">
+  <project timestamp="1583091195203" name="All files">
+    <metrics statements="472" coveredstatements="307" conditionals="120" coveredconditionals="55" methods="98" coveredmethods="48" elements="690" coveredelements="410" complexity="0" loc="472" ncloc="472" packages="13" files="32" classes="32"/>
     <package name="app">
       <metrics statements="1" coveredstatements="1" conditionals="14" coveredconditionals="7" methods="0" coveredmethods="0"/>
       <file name="ormconfig.js" path="/usr/src/app/ormconfig.js">
@@ -145,7 +145,7 @@
       </file>
     </package>
     <package name="app.src.controllers">
-      <metrics statements="137" coveredstatements="62" conditionals="12" coveredconditionals="0" methods="22" coveredmethods="0"/>
+      <metrics statements="138" coveredstatements="63" conditionals="12" coveredconditionals="0" methods="22" coveredmethods="0"/>
       <file name="AccountController.ts" path="/usr/src/app/src/controllers/AccountController.ts">
         <metrics statements="46" coveredstatements="17" conditionals="4" coveredconditionals="0" methods="7" coveredmethods="0"/>
         <line num="2" count="9" type="stmt"/>
@@ -258,7 +258,7 @@
         <line num="94" count="9" type="stmt"/>
       </file>
       <file name="AuthController.ts" path="/usr/src/app/src/controllers/AuthController.ts">
-        <metrics statements="27" coveredstatements="17" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="0"/>
+        <metrics statements="28" coveredstatements="18" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="0"/>
         <line num="1" count="9" type="stmt"/>
         <line num="2" count="9" type="stmt"/>
         <line num="3" count="9" type="stmt"/>
@@ -269,23 +269,24 @@
         <line num="9" count="9" type="stmt"/>
         <line num="10" count="9" type="stmt"/>
         <line num="11" count="9" type="stmt"/>
-        <line num="14" count="9" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
+        <line num="12" count="9" type="stmt"/>
+        <line num="16" count="9" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
         <line num="24" count="0" type="stmt"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="29" count="9" type="stmt"/>
-        <line num="31" count="0" type="stmt"/>
-        <line num="47" count="9" type="stmt"/>
-        <line num="49" count="0" type="stmt"/>
-        <line num="53" count="9" type="stmt"/>
-        <line num="55" count="0" type="stmt"/>
-        <line num="71" count="9" type="stmt"/>
-        <line num="73" count="0" type="stmt"/>
-        <line num="77" count="9" type="stmt"/>
-        <line num="79" count="0" type="stmt"/>
-        <line num="81" count="0" type="stmt"/>
-        <line num="85" count="9" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="40" count="9" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="58" count="9" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="64" count="9" type="stmt"/>
+        <line num="66" count="0" type="stmt"/>
+        <line num="82" count="9" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="88" count="9" type="stmt"/>
+        <line num="90" count="0" type="stmt"/>
+        <line num="92" count="0" type="stmt"/>
+        <line num="96" count="9" type="stmt"/>
       </file>
       <file name="BaseController.ts" path="/usr/src/app/src/controllers/BaseController.ts">
         <metrics statements="8" coveredstatements="3" conditionals="4" coveredconditionals="0" methods="3" coveredmethods="0"/>
@@ -441,10 +442,9 @@
       </file>
     </package>
     <package name="app.src.services">
-      <metrics statements="79" coveredstatements="77" conditionals="8" coveredconditionals="7" methods="22" coveredmethods="20"/>
+      <metrics statements="76" coveredstatements="76" conditionals="8" coveredconditionals="7" methods="20" coveredmethods="20"/>
       <file name="Auth.ts" path="/usr/src/app/src/services/Auth.ts">
-        <metrics statements="36" coveredstatements="34" conditionals="4" coveredconditionals="4" methods="13" coveredmethods="11"/>
-        <line num="1" count="9" type="stmt"/>
+        <metrics statements="33" coveredstatements="33" conditionals="4" coveredconditionals="4" methods="11" coveredmethods="11"/>
         <line num="3" count="9" type="stmt"/>
         <line num="4" count="9" type="stmt"/>
         <line num="5" count="9" type="stmt"/>
@@ -465,21 +465,19 @@
         <line num="43" count="3" type="stmt"/>
         <line num="45" count="1" type="stmt"/>
         <line num="48" count="2" type="stmt"/>
-        <line num="54" count="0" type="stmt"/>
-        <line num="63" count="2" type="stmt"/>
-        <line num="64" count="2" type="stmt"/>
-        <line num="65" count="2" type="stmt"/>
-        <line num="67" count="2" type="stmt"/>
-        <line num="68" count="2" type="stmt"/>
-        <line num="70" count="2" type="stmt"/>
+        <line num="54" count="2" type="stmt"/>
+        <line num="55" count="2" type="stmt"/>
+        <line num="56" count="2" type="stmt"/>
+        <line num="58" count="2" type="stmt"/>
+        <line num="59" count="2" type="stmt"/>
+        <line num="61" count="2" type="stmt"/>
+        <line num="62" count="2" type="stmt"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
         <line num="71" count="2" type="stmt"/>
         <line num="74" count="1" type="stmt"/>
         <line num="77" count="1" type="stmt"/>
-        <line num="80" count="2" type="stmt"/>
-        <line num="83" count="1" type="stmt"/>
-        <line num="86" count="1" type="stmt"/>
-        <line num="92" count="0" type="stmt"/>
-        <line num="100" count="9" type="stmt"/>
+        <line num="82" count="9" type="stmt"/>
       </file>
       <file name="ServiceProvider.ts" path="/usr/src/app/src/services/ServiceProvider.ts">
         <metrics statements="43" coveredstatements="43" conditionals="4" coveredconditionals="3" methods="9" coveredmethods="9"/>
