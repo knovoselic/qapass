@@ -1,10 +1,10 @@
 import { date_to_string, accepts_json, knex, user, auth_user } from '../../helpers';
-import { Request, Express } from 'express';
+import { Request } from 'express';
 import { IncomingHttpHeaders } from 'http';
-import ServiceProvider from '../../services/ServiceProvider';
 import knexConnection  from "knex";
 import User from '../../entity/User';
 import { Connection } from 'typeorm';
+import { Container } from 'inversify';
 
 describe('Function date_to_string should', () => {
     it("return YYYY-MM-DD HH:ii:ss format", async () => {
@@ -59,23 +59,17 @@ describe('Function accepts_json should', () => {
 
 describe('Function knex should', () => {
     it("return knex connection", async () => {
-        const sp = await ServiceProvider.get();
-
-        const container = sp.getContainer();
+        const container = global.container as Container;
 
         const knex_connection = container.get<knexConnection>('knex');
-
-        global.container = container;
 
         expect(knex()).toEqual(knex_connection);
     });
 });
 
 describe('Function user should', () => {
-    beforeAll(async () => {
-        const sp = await ServiceProvider.get();
-
-        const container = sp.getContainer();
+    beforeEach(async () => {
+        const container = global.container as Container;
 
         const knex_connection = container.get<knexConnection>('knex');
 
@@ -95,9 +89,7 @@ describe('Function user should', () => {
         expect(await user(req)).toEqual(undefined);
     });
     it("return User for exitant req.user value", async () => {
-        const sp = await ServiceProvider.get();
-
-        const container = sp.getContainer();
+        const container = global.container as Container;
 
         const typeorm = container.get<Connection>('typeorm');
 
@@ -118,9 +110,7 @@ describe('Function user should', () => {
 
 describe('Function auth_user should', () => {
     beforeAll(async () => {
-        const sp = await ServiceProvider.get();
-
-        const container = sp.getContainer();
+        const container = global.container as Container;
 
         const knex_connection = container.get<knexConnection>('knex');
 
@@ -140,9 +130,7 @@ describe('Function auth_user should', () => {
         await expect(auth_user(req)).rejects.toThrowError('Internal server error.');
     });
     it("return User for exitant req.user value", async () => {
-        const sp = await ServiceProvider.get();
-
-        const container = sp.getContainer();
+        const container = global.container as Container;
 
         const typeorm = container.get<Connection>('typeorm');
 

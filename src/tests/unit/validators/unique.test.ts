@@ -1,14 +1,12 @@
 import unique from '../../../validators/unique';
-import ServiceProvider from '../../../services/ServiceProvider';
 import knexConnection  from "knex";
 import User from '../../../entity/User';
 import { Connection } from 'typeorm';
+import { Container } from 'inversify';
 
 describe('Function unique should', () => {
     beforeEach(async () => {
-        const sp = await ServiceProvider.get();
-
-        const container = sp.getContainer();
+        const container = global.container as Container;
 
         const knex_connection = container.get<knexConnection>('knex');
 
@@ -29,11 +27,7 @@ describe('Function unique should', () => {
         ).toBe(false);
     });
     it("return false when valid arguments but record exists", async () => {
-        const sp = await ServiceProvider.get();
-
-        const container = sp.getContainer();
-
-        global.container = container;
+        const container = global.container as Container;
 
         const typeorm = container.get<Connection>('typeorm');
 
@@ -50,10 +44,6 @@ describe('Function unique should', () => {
         ).toBe(false);
     });
     it("return true when valid arguments and record doesn't exist", async () => {
-        const sp = await ServiceProvider.get();
-
-        global.container = sp.getContainer();
-
         expect(
             await unique('1', JSON.stringify({
                 table: 'users',
