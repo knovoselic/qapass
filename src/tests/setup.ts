@@ -21,7 +21,25 @@ beforeAll(async () => {
 
     (<any> global).serviceProvider = sp;
 
-    global.container = await sp.getContainer();
+    const container = await sp.getContainer();
+
+    global.container = container;
+
+    const knex_connection = container.get<knexConnection>('knex');
+
+    await knex_connection.migrate.latest();
 });
 
 afterEach(async () => await clearDB());
+
+afterAll(async () => {
+    const sp = await ServiceProvider.get();
+
+    (<any> global).serviceProvider = sp;
+
+    const container = await sp.getContainer();
+
+    const knex_connection = container.get<knexConnection>('knex');
+
+    await knex_connection.migrate.rollback();
+});
