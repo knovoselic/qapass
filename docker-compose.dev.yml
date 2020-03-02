@@ -44,9 +44,7 @@ services:
       ports:
           - 33062:3306
       networks:
-          zadatak0:
-              aliases:
-                  - ${DB_TEST_HOST}
+          - zadatak0
 
 networks:
   zadatak0:

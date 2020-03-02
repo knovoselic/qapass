@@ -1,18 +1,10 @@
-import { date_to_string, accepts_json, knex, user, auth_user } from '../../helpers';
+import { accepts_json, knex, user, auth_user } from '../../helpers';
 import { Request } from 'express';
 import { IncomingHttpHeaders } from 'http';
 import knexConnection  from "knex";
 import User from '../../entity/User';
 import { Connection } from 'typeorm';
 import { Container } from 'inversify';
-
-describe('Function date_to_string should', () => {
-    it("return YYYY-MM-DD HH:ii:ss format", async () => {
-        const date = new Date(2020, 1, 2, 2, 2, 2);
-
-        expect(date_to_string(date)).toBe('2020-02-02 02:02:02');
-    });
-});
 
 describe('Function accepts_json should', () => {
     it("return true for accept application/json header", async () => {
