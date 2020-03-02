@@ -56,29 +56,3 @@ export const auth_user = async (req: Request): Promise<User> => {
 
     return user_instance;
 }
-
-export const date_to_string = (date: Date) => {
-    var day = date.getDate() + "";
-    var month = (date.getMonth() + 1) + "";
-    var year = date.getFullYear() + "";
-    var hour = date.getHours() + "";
-    var minutes = date.getMinutes() + "";
-    var seconds = date.getSeconds() + "";
-
-    const checkZero = (e: any) => {
-        if(e.length == 1){
-            e = "0" + e;
-        }
-
-        return e;
-    }
-
-    day = checkZero(day);
-    month = checkZero(month);
-    year = checkZero(year);
-    hour = checkZero(hour);
-    minutes = checkZero(minutes);
-    seconds = checkZero(seconds);
-
-    return year + "-" + month + "-" + day + " " + hour + ":" + minutes + ":" + seconds;
-}

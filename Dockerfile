@@ -25,4 +25,4 @@ USER node
 
 EXPOSE 3000
 
-ENTRYPOINT npm run migration-run && npm run production
+CMD npm run migration-run && npm run production
