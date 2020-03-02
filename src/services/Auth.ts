@@ -21,7 +21,7 @@ class Auth
         this.userRepository = typeorm.getRepository(User);
     }
 
-    public async login(req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void)
+    public login = async (req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void) =>
     {
         const promise = new Promise(async (res, rej) => {
 
@@ -49,7 +49,7 @@ class Auth
             });
     }
 
-    public async register(req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void)
+    public register = async (req: Request, email: string, password: string, done: (error: any, user?: any, options?: IVerifyOptions) => void) =>
     {
         const promise = new Promise(async (res, rej) => {
             const salt = bcrypt.genSaltSync(10);

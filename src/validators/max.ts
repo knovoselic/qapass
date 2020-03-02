@@ -8,6 +8,27 @@ function getNumberFromString(value: string) {
 }
 
 export default (subject: any, limit: string) => {
+    if(limit === '') throw new Exception('Invalid max rule definition.');
+
+    const evaluable = [
+        'string', 'number', 'array'
+    ];
+
+    let evaluate = 'string';
+
+    const frags = limit.split(',', 2);
+
+    limit = frags[0];
+
+    if(frags.length == 2) {
+        if(evaluable.includes(frags[0])) {
+            limit = frags[1];
+            evaluate = frags[0];
+        } else {
+            throw new Exception('Invalid max rule definition.');
+        }
+    }
+
     let valid = true;
 
     if([null, undefined].includes(subject)) return valid;
@@ -18,24 +39,22 @@ export default (subject: any, limit: string) => {
         throw new Exception('Non integer value for limit encountered.');
     }
 
-    if(typeof subject === 'string') {
-
-        const n = getNumberFromString(subject);
-
-        if(typeof n === 'number') valid = n <= l_int;
-        else valid = subject.length <= l_int;
-
-    } else if(Array.isArray(subject)) {
+    if(evaluate === 'string') {
 
         valid = subject.length <= l_int;
 
-    } else if(typeof subject === 'number') {
+    } else if(evaluate === 'array') {
+        if(!Array.isArray(subject)) return false;
 
-        valid = subject <= l_int;
+        valid = subject.length <= l_int;
 
     } else {
 
-        throw new Exception('Not implemented.');
+        const n = getNumberFromString(subject);
+
+        if(n === undefined) return false;
+
+        valid = n <= l_int;
     }
 
     return valid;
