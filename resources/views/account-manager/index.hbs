@@ -1,8 +1,11 @@
-Account Manager
-<br><br>
-<a href="/create">Create</a>
-<br><br>
-<table border="1">
+<div style="margin-left: 35px;">
+    <br><br>
+    <h1>Account Manager</h1>
+    <br>
+    <a href="/create" class="btn btn-sm btn-info">Create new account</a>
+    <br><br><br>
+</div>
+<table style="margin-left: 35px;" class="table table-striped table-responsive-md btn-table">
     <thead>
         <tr>
             <th>
@@ -32,12 +35,12 @@ Account Manager
                 <td>{{this.password}}</td>
                 <td>{{this.host}}</td>
                 <td>{{this.description}}</td>
-                <td><a href="/{{this.id}}/edit">Edit</a></td>
+                <td><a href="/{{this.id}}/edit" class="btn btn-xs btn-outline-warning">Edit</a></td>
                 <td>
                     <form method="POST" action="/{{this.id}}/delete">
                         <input type="hidden" name="_csrf" value="{{../csrf}}">
                         <input type="hidden" name="_method" value="delete">
-                        <input type="submit" value="Delete">
+                        <input type="submit" value="Delete" class="btn btn-xs btn-outline-danger">
                     </form>
                 </td>
             </tr>
