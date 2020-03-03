@@ -1,8 +1,8 @@
 import ServiceProvider from './services/ServiceProvider';
 import { InversifyExpressServer } from 'inversify-express-utils';
 import Exception from './errors/Exception';
-import errorHanlder from './services/ErrorHandler';
 import appConfig from './middlewares/config';
+import ErrorHandler from './services/ErrorHandler';
 
 class App {
     private serviceProvider: ServiceProvider;
@@ -20,11 +20,13 @@ class App {
 
         this.server.setConfig(appConfig);
 
+        const errorHandler = container.get<ErrorHandler>('ErrorHandler');
+
         this.server.setErrorConfig((app) => {
             app.get('*', function(req, res, next) {
                 next(new Exception('Not found.', 404));
             });
-            app.use(errorHanlder.handle);
+            app.use(errorHandler.handle);
         });
     }
 

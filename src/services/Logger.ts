@@ -1,14 +1,21 @@
 import fs from "fs";
+import { injectable } from "inversify";
 
+@injectable()
 class Logger
 {
-    static storagePath: string = `${__dirname}/../../storage/logs/`;
+    protected rootLogPath: string = `${__dirname}/../../storage/logs/`;
+    protected fs: typeof fs;
+
+    public constructor(fs_module: typeof fs) {
+        this.fs = fs_module;
+    }
 
     public write = async (content: string, path: string) => {
-        const writeStream = fs.createWriteStream(`${Logger.storagePath}${path}`, {'flags': 'a'});
 
-        writeStream.write(`${content}\r\n`);
+        return this.fs.createWriteStream(`${this.rootLogPath}${path}`, {'flags': 'a'})
+            .write(`${content}\r\n`);
     };
 }
 
-export default new Logger;
+export default Logger;

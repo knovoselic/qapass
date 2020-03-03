@@ -1,12 +1,20 @@
 import { NextFunction, Response, Request } from "express";
-import logger from "./Logger";
+import Logger from "./Logger";
 import { accepts_json } from "../helpers";
+import { injectable, inject } from "inversify";
 
+@injectable()
 class ErrorHandler
 {
     protected log_codes = [
         400, 408
     ];
+
+    protected logger: Logger;
+
+    public constructor(@inject('Logger') logger: Logger) {
+        this.logger = logger;
+    }
 
     public handle = (err: any,req: Request, res: Response, next: NextFunction) => {
         const date = new Date();
@@ -14,7 +22,7 @@ class ErrorHandler
         const content = `${date}\r\n${req.method} on ${req.path}\r\nError:\r\n${err}\r\n`;
 
         if(err.status >= 500 || this.log_codes.includes(err.status)) {
-            logger.write(content, 'errors.log');
+            this.logger.write(content, 'errors.log');
         }
 
         if(process.env.APP_ENV == 'local') console.log(err);
@@ -30,8 +38,7 @@ class ErrorHandler
         return res
             .status(err.status)
             .render('error', {message: err.message, errors: err.errors, layout: false})
-
     };
 }
 
-export default new ErrorHandler;
+export default ErrorHandler;

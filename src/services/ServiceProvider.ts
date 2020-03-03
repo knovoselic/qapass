@@ -10,9 +10,12 @@ import User from '../entity/User';
 import Account from '../entity/Account';
 import ApiKey from '../entity/ApiKey';
 import Auth from './Auth';
+import Logger from './Logger';
+import ErrorHandler from './ErrorHandler';
 import ApiKeyListTransformer from '../transformers/ApiKeyListTransformer';
 import AccountFilter from '../filters/AccountFilter';
 import AccountListTransformer from '../transformers/AccountListTransformer';
+import fs from 'fs';
 
 decorate(injectable(), Connection);
 
@@ -103,6 +106,18 @@ export default class ServiceProvider
         this.container
             .bind<AccountListTransformer>('AccountListTransformer')
             .to(AccountListTransformer);
+
+        this.container
+            .bind<Logger>('Logger')
+            .toDynamicValue(() : Logger => new Logger(fs));
+
+        this.container
+            .bind<ErrorHandler>('ErrorHandler')
+            .toDynamicValue(() : ErrorHandler => {
+                return new ErrorHandler(
+                    this.container.get('Logger')
+                );
+            });
 
         this.container
             .bind<Auth>('Auth')
