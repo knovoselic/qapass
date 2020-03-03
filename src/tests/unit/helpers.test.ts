@@ -6,51 +6,47 @@ import User from '../../entity/User';
 import { Connection } from 'typeorm';
 import { Container } from 'inversify';
 
-describe('Function accepts_json should', () => {
-    it("return true for accept application/json header", async () => {
-        const req = {
-            xhr: false,
-            headers: {
-                accept: 'application/json'
-            } as IncomingHttpHeaders
-        } as Request;
+describe('accepts_json', () => {
+    describe('when xhr request', () => {
+        it("returns true", async () => {
+            const req = {
+                xhr: true,
+                headers: {
+                    accept: 'random'
+                } as IncomingHttpHeaders
+            } as Request;
 
-        expect(accepts_json(req)).toBe(true);
+            expect(accepts_json(req)).toBe(true);
+        });
     });
-    it("return true for xhr request", async () => {
-        const req = {
-            xhr: true,
-            headers: {
-                accept: 'random'
-            } as IncomingHttpHeaders
-        } as Request;
+    describe("when xhr request with 'accept application/json' header", () => {
+        it("returns true", async () => {
+            const req = {
+                xhr: true,
+                headers: {
+                    accept: 'application/json'
+                } as IncomingHttpHeaders
+            } as Request;
 
-        expect(accepts_json(req)).toBe(true);
+            expect(accepts_json(req)).toBe(true);
+        });
     });
-    it("returns true if both application/json header and xhr request", async () => {
-        const req = {
-            xhr: true,
-            headers: {
-                accept: 'application/json'
-            } as IncomingHttpHeaders
-        } as Request;
+    describe("when non xhr request without 'accept application/json' header", () => {
+        it("returns false", async () => {
+            const req = {
+                xhr: false,
+                headers: {
+                    accept: 'random'
+                } as IncomingHttpHeaders
+            } as Request;
 
-        expect(accepts_json(req)).toBe(true);
-    });
-    it("returns false if no application/json header or xhr request", async () => {
-        const req = {
-            xhr: false,
-            headers: {
-                accept: 'random'
-            } as IncomingHttpHeaders
-        } as Request;
-
-        expect(accepts_json(req)).toBe(false);
+            expect(accepts_json(req)).toBe(false);
+        });
     });
 });
 
-describe('Function knex should', () => {
-    it("return knex connection", async () => {
+describe('knex', () => {
+    it("returns knex connection", async () => {
         const container = global.container as Container;
 
         const knex_connection = container.get<knexConnection>('knex');
@@ -59,70 +55,70 @@ describe('Function knex should', () => {
     });
 });
 
-describe('Function user should', () => {
-    it("return undefined for empty req.user value", async () => {
-        const req = {
-        } as Request;
+describe('user', () => {
+    describe("when req.user is undefined or doesn't exist", () => {
+        it("returns undefined", async () => {
+            expect(await user({} as Request)).toBe(undefined);
 
-        expect(await user(req)).toBe(undefined);
-    });
-    it("return undefined for non exitant req.user value", async () => {
-        const req = {
-            user: 1 as Express.User
-        } as Request;
+            const req = {
+                user: 1 as Express.User
+            } as Request;
 
-        expect(await user(req)).toEqual(undefined);
-    });
-    it("return User for exitant req.user value", async () => {
-        const container = global.container as Container;
-
-        const typeorm = container.get<Connection>('typeorm');
-
-        const u = await typeorm.getRepository(User).save({
-            email: 'test@test.com',
-            password: '123123'
+            expect(await user(req)).toEqual(undefined);
         });
+    });
+    describe('when req.user value does exist in database', () => {
+        it("returns that User instance", async () => {
+            const container = global.container as Container;
 
-        const req = {
-            user: u.id as Express.User
-        } as Request;
+            const typeorm = container.get<Connection>('typeorm');
 
-        const record = await user(req);
+            const u = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
 
-        expect(record?.id == u.id).toEqual(true);
+            const req = {
+                user: u.id as Express.User
+            } as Request;
+
+            const record = await user(req);
+
+            expect(record?.id == u.id).toEqual(true);
+        });
     });
 });
 
-describe('Function auth_user should', () => {
-    it("throw error for empty req.user value", async () => {
-        const req = {
-        } as Request;
+describe('auth_user', () => {
+    describe("when req.user is undefined or doesn't exist", () => {
+        it("throws Internal server error", async () => {
+            await expect(auth_user({} as Request)).rejects.toThrowError('Internal server error.');
 
-        await expect(auth_user(req)).rejects.toThrowError('Internal server error.');
-    });
-    it("throw error for non exitant req.user value", async () => {
-        const req = {
-            user: 1 as Express.User
-        } as Request;
+            const req = {
+                user: 1 as Express.User
+            } as Request;
 
-        await expect(auth_user(req)).rejects.toThrowError('Internal server error.');
-    });
-    it("return User for exitant req.user value", async () => {
-        const container = global.container as Container;
-
-        const typeorm = container.get<Connection>('typeorm');
-
-        const u = await typeorm.getRepository(User).save({
-            email: 'test@test.com',
-            password: '123123'
+            await expect(auth_user(req)).rejects.toThrowError('Internal server error.');
         });
+    });
+    describe('when req.user value does exist in database', () => {
+        it("returns that User instance", async () => {
+            const container = global.container as Container;
 
-        const req = {
-            user: u.id as Express.User
-        } as Request;
+            const typeorm = container.get<Connection>('typeorm');
 
-        const record = await auth_user(req);
+            const u = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
 
-        expect(record?.id == u.id).toEqual(true);
+            const req = {
+                user: u.id as Express.User
+            } as Request;
+
+            const record = await auth_user(req);
+
+            expect(record?.id == u.id).toEqual(true);
+        });
     });
 });
