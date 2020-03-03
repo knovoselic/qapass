@@ -6,6 +6,11 @@ class Repository<T> extends BaseRepository<T>
 {
     protected sqb:  SelectQueryBuilder<any>;
 
+    public getSelectQueryBuilder()
+    {
+        return this.sqb;
+    }
+
     public filter(req: Request,filter: Filter)
     {
         let sqb = this.createQueryBuilder();
