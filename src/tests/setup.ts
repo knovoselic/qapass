@@ -31,7 +31,11 @@ beforeAll(async () => {
     await knex_connection.migrate.latest();
 });
 
-afterEach(async () => await clearDB());
+afterEach(async () => {
+    jest.restoreAllMocks();
+
+    await clearDB();
+});
 
 afterAll(async () => {
     const sp = await ServiceProvider.get();

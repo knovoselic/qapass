@@ -19,4 +19,4 @@ class UpsertAccountRequest extends BaseRequest
     }
 }
 
-export default (new UpsertAccountRequest).validate;
+export default new UpsertAccountRequest;

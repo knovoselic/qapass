@@ -53,7 +53,7 @@ class AccountController extends BaseController implements interfaces.Controller
         });
     }
 
-    @httpPost('/create', authenticated, upsertAccountRequest)
+    @httpPost('/create', authenticated, upsertAccountRequest.validate)
     public async store(@request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);
@@ -98,7 +98,7 @@ class AccountController extends BaseController implements interfaces.Controller
         });
     }
 
-    @httpPut('/:id/edit', authenticated, upsertAccountRequest)
+    @httpPut('/:id/edit', authenticated, upsertAccountRequest.validate)
     public async update(@requestParam('id') id: string, @request() req: Request, @response() res: Response, @next() next: NextFunction)
     {
         const user = await auth_user(req);

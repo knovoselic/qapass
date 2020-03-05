@@ -48,7 +48,7 @@ class AuthController extends BaseController implements interfaces.Controller
     }
 
     @httpPost(
-        '/register', guest, registerRequest,
+        '/register', guest, registerRequest.validate,
         passport.authenticate('register', {
             session: true,
             failureRedirect: '/register',
@@ -72,8 +72,8 @@ class AuthController extends BaseController implements interfaces.Controller
     }
 
     @httpPost(
-        '/login', guest,
-        loginRequest,passport.authenticate('login', {
+        '/login', guest, loginRequest.validate,
+        passport.authenticate('login', {
             session: true,
             failureRedirect: '/login',
             failureFlash: true,

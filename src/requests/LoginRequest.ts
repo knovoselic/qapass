@@ -15,4 +15,4 @@ class LoginRequest extends BaseRequest
     }
 }
 
-export default (new LoginRequest).validate;
+export default new LoginRequest;

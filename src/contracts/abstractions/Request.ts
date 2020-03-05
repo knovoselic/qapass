@@ -14,31 +14,19 @@ import RuleDefinition from "../interfaces/RuleDefinition";
 
 export default abstract class Request
 {
-    protected rule_functions: RuleMapping;
-
-    public constructor()
-    {
-        this.setupRuleFunctions();
-    }
-
-    protected setupRuleFunctions()
-    {
-        this.rule_functions = {
-            required: required,
-            string: string,
-            email: email,
-            max: max,
-            in: inValues,
-            unique: unique
-        };
-    }
+    protected rule_functions: RuleMapping = {
+        required: required,
+        string: string,
+        email: email,
+        max: max,
+        in: inValues,
+        unique: unique
+    };
 
     protected mapErrors(errors: any, field_errors: any)
     {
         for (const validation_field in field_errors){
-            if (field_errors.hasOwnProperty(validation_field)) {
-                errors[validation_field] = field_errors[validation_field];
-            }
+            errors[validation_field] = field_errors[validation_field];
         }
     }
 
@@ -51,9 +39,7 @@ export default abstract class Request
             return next(exception);
         }
 
-        if(errors) {
-            (<any> req).flash('validation-errors', errors);
-        }
+        (<any> req).flash('validation-errors', errors);
 
         return res.redirect(req.header('Referer') || '/');
 
@@ -61,18 +47,14 @@ export default abstract class Request
 
     protected parseRule(rule: string): RuleDefinition
     {
-        let rule_sections = rule.split(':');
+        const rule_sections = rule.split(':');
 
         const rule_name = rule_sections[0];
 
         let data = undefined;
 
-        for (let j = 1; j < rule_sections.length; j++) {
-            if(j == 1) {
-                data = rule_sections[j];
-            } else {
-                data = `${data}:${rule_sections[j]}`;
-            }
+        if(rule_sections.length > 1) {
+            data = rule_sections.slice(1).join(':');
         }
 
         return {
@@ -144,12 +126,10 @@ export default abstract class Request
         var errors: any = {};
 
         try {
-            for (const field in rules.rules){
-                if (rules.rules.hasOwnProperty(field)) {
-                    const field_errors = await this.validateField(req, field, rules.rules[field]);
+            for (const field in rules.rules) {
+                const field_errors = await this.validateField(req, field, rules.rules[field]);
 
-                    this.mapErrors(errors, field_errors);
-                }
+                this.mapErrors(errors, field_errors);
             }
         } catch (error) {
 

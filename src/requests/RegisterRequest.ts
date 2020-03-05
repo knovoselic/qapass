@@ -20,4 +20,4 @@ class RegisterRequest extends BaseRequest
     }
 }
 
-export default (new RegisterRequest).validate;
+export default new RegisterRequest;
