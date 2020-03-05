@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { interfaces, controller, httpGet, request, response, next } from 'inversify-express-utils';
 import BaseController from './BaseController';
 import { auth_user } from '../helpers';
-import { Connection, getCustomRepository } from 'typeorm';
+import { Connection } from 'typeorm';
 import { inject } from 'inversify';
 import AccountFilter from '../filters/AccountFilter';
 import AccountListTransformer from '../transformers/AccountListTransformer';
@@ -17,15 +17,14 @@ class ApiController extends BaseController implements interfaces.Controller
     protected accountListTransformer: AccountListTransformer;
 
     constructor(
+        @inject('AccountRepository') accountRepository: AccountRepository,
         @inject('AccountFilter') accountFilter: AccountFilter,
-        @inject('typeorm') typeorm: Connection,
         @inject('AccountListTransformer') accountListTransformer: AccountListTransformer,
     ) {
         super();
 
-        this.accountRepository = getCustomRepository(AccountRepository);
+        this.accountRepository = accountRepository;
         this.accountFilter = accountFilter;
-        this.typeorm = typeorm;
         this.accountListTransformer = accountListTransformer;
     }
 

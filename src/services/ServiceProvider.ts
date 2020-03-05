@@ -5,7 +5,7 @@ import '../controllers/AuthController';
 import '../controllers/AccountController';
 import '../controllers/ApiKeyController';
 import '../controllers/ApiController';
-import { createConnection, Connection } from 'typeorm';
+import { createConnection, Connection, Repository, getCustomRepository, getRepository } from 'typeorm';
 import User from '../entity/User';
 import Account from '../entity/Account';
 import ApiKey from '../entity/ApiKey';
@@ -16,6 +16,7 @@ import ApiKeyListTransformer from '../transformers/ApiKeyListTransformer';
 import AccountFilter from '../filters/AccountFilter';
 import AccountListTransformer from '../transformers/AccountListTransformer';
 import fs from 'fs';
+import AccountRepository from '../repositories/AccountRepository';
 
 decorate(injectable(), Connection);
 
@@ -92,8 +93,20 @@ export default class ServiceProvider
             .to(Account);
 
         this.container
+            .bind<Repository<Account>>('Repository<Account>')
+            .toDynamicValue(() : Repository<Account> => getRepository(Account));
+
+        this.container
+            .bind<AccountRepository>('AccountRepository')
+            .toDynamicValue(() : AccountRepository => getCustomRepository(AccountRepository));
+
+        this.container
             .bind<ApiKey>('ApiKey')
             .to(ApiKey);
+
+        this.container
+            .bind<Repository<ApiKey>>('Repository<ApiKey>')
+            .toDynamicValue(() : Repository<ApiKey> => getRepository(ApiKey));
 
         this.container
             .bind<ApiKeyListTransformer>('ApiKeyListTransformer')

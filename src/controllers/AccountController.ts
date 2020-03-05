@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { interfaces, controller, httpGet, request, response, next, httpPut, httpPost, httpDelete, requestParam } from 'inversify-express-utils';
 import BaseController from './BaseController';
 import authenticated from '../middlewares/authenticated';
-import { Connection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import Account from '../entity/Account';
 import { inject } from 'inversify';
 import { auth_user, validation_errors } from '../helpers';
@@ -12,19 +12,12 @@ import upsertAccountRequest from '../requests/UpsertAccountRequest';
 @controller('')
 class AccountController extends BaseController implements interfaces.Controller
 {
-    protected typeorm: Connection;
-    protected account: Account;
     protected accountRepository: Repository<Account>;
 
-    constructor(
-        @inject('Account') account: Account,
-        @inject('typeorm') typeorm: Connection
-    ) {
+    constructor(@inject('Repository<Account>') accountRepository: Repository<Account>) {
         super();
 
-        this.typeorm = typeorm;
-        this.account = account;
-        this.accountRepository = typeorm.getRepository(Account);
+        this.accountRepository = accountRepository;
     }
 
     @httpGet('/', authenticated)

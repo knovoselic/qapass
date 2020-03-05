@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { interfaces, controller, httpGet, request, response, next, httpDelete, httpPost, requestParam } from 'inversify-express-utils';
 import BaseController from './BaseController';
 import authenticated from '../middlewares/authenticated';
-import { Connection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import ApiKey from '../entity/ApiKey';
 import { inject } from 'inversify';
 import { auth_user } from '../helpers';
@@ -12,21 +12,16 @@ import ApiKeyListTransformer from '../transformers/ApiKeyListTransformer';
 @controller('/api-keys')
 class ApiKeyController extends BaseController implements interfaces.Controller
 {
-    protected typeorm: Connection;
-    protected api_key: ApiKey;
     protected apiKeyRepository: Repository<ApiKey>;
     protected apiKeyListTransformer: ApiKeyListTransformer;
 
     constructor(
-        @inject('ApiKey') api_key: ApiKey,
-        @inject('typeorm') typeorm: Connection,
+        @inject('Repository<ApiKey>') apiKeyRepository: Repository<ApiKey>,
         @inject('ApiKeyListTransformer') apiKeyListTransformer: ApiKeyListTransformer
     ) {
         super();
 
-        this.typeorm = typeorm;
-        this.api_key = api_key;
-        this.apiKeyRepository = typeorm.getRepository(ApiKey);
+        this.apiKeyRepository = apiKeyRepository;
         this.apiKeyListTransformer = apiKeyListTransformer;
     }
 
