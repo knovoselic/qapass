@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction, RequestHandler } from "express";
+import { Request, Response, NextFunction } from "express";
 
-export default async (req: Request, res: Response, next: NextFunction) => {
+export default (req: Request, res: Response, next: NextFunction) => {
     if(!req.user) {
         return res.redirect('/login');
     }

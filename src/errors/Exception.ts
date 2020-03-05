@@ -10,11 +10,10 @@ export default class Exception extends Error
 
         this.name = this.constructor.name;
 
-        this.message = message || 
-            'Something went wrong. Please try again.';
+        this.message = message;
 
         this.errors = errors;
-        
-        this.status = status || 500;
+
+        this.status = status;
     }
 }

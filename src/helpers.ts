@@ -29,12 +29,13 @@ export const getFlash = (req: Request, identifier: string) => {
 
     let flash = req.flash(identifier);
 
-    if(flash.length < 1) {
+    if(flash === undefined) return;
 
-        return;
+    if(Array.isArray(flash)) {
+        flash  = flash[0];
     }
 
-    return flash[0];
+    return flash;
 }
 
 export const user = async (req: Request) => {
