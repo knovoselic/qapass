@@ -47,7 +47,6 @@
     "cookie-parser": "^1.4.4",
     "cookie-session": "^1.4.0",
     "csurf": "^1.11.0",
-    "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-handlebars": "^3.1.0",
     "inversify": "^5.0.1",

@@ -4,5 +4,6 @@
     "string": "Value must be of type \"string\".",
     "in": "Value is not allowed.",
     "max": "Value is not allowed.",
+    "confirmed": "Value does not match confirmation field.",
     "unique": "Value already exists."
 }

@@ -8,16 +8,22 @@ import { inject } from 'inversify';
 import { auth_user, validation_errors } from '../helpers';
 import Exception from '../errors/Exception';
 import upsertAccountRequest from '../requests/UpsertAccountRequest';
+import AccountIndexPageTransformer from '../transformers/AccountIndexPageTransformer';
 
 @controller('')
 class AccountController extends BaseController implements interfaces.Controller
 {
     protected accountRepository: Repository<Account>;
+    protected accountIndexPageTransformer: AccountIndexPageTransformer;
 
-    constructor(@inject('Repository<Account>') accountRepository: Repository<Account>) {
+    constructor(
+        @inject('Repository<Account>') accountRepository: Repository<Account>,
+        @inject('AccountIndexPageTransformer') accountIndexPageTransformer: AccountIndexPageTransformer
+    ) {
         super();
 
         this.accountRepository = accountRepository;
+        this.accountIndexPageTransformer = accountIndexPageTransformer;
     }
 
     @httpGet('/', authenticated)
@@ -25,13 +31,16 @@ class AccountController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        const accounts = await this.accountRepository.find({where: [
-            {user_id: user.id},
-            {public: true},
-        ]});
+        const accounts = await this.accountRepository.find({
+            where: [
+                {user_id: user.id},
+                {public: true},
+            ],
+            relations: ['user']
+        });
 
         return this.render(res, 'account-manager/index', {
-            accounts: accounts,
+            accounts: this.accountIndexPageTransformer.transformArray(accounts),
             csrf: req.csrfToken(),
             errors: validation_errors(req)
         });

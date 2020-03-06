@@ -15,6 +15,7 @@ import ErrorHandler from './ErrorHandler';
 import ApiKeyListTransformer from '../transformers/ApiKeyListTransformer';
 import AccountFilter from '../filters/AccountFilter';
 import AccountListTransformer from '../transformers/AccountListTransformer';
+import AccountIndexPageTransformer from '../transformers/AccountIndexPageTransformer';
 import fs from 'fs';
 import AccountRepository from '../repositories/AccountRepository';
 
@@ -119,6 +120,10 @@ export default class ServiceProvider
         this.container
             .bind<AccountListTransformer>('AccountListTransformer')
             .to(AccountListTransformer);
+
+        this.container
+            .bind<AccountIndexPageTransformer>('AccountIndexPageTransformer')
+            .to(AccountIndexPageTransformer);
 
         this.container
             .bind<Logger>('Logger')

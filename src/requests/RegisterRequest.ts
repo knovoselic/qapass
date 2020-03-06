@@ -14,7 +14,7 @@ class RegisterRequest extends BaseRequest
         return {
             rules: {
                 'email': 'required|email|max:255|unique:'+JSON.stringify(unique_email),
-                'password': 'required|string|max:255',
+                'password': 'required|string|confirmed|max:255',
             }
         }
     }

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { Container } from "inversify";
 import ApiKey from "../entity/ApiKey";
-import { Connection } from "typeorm";
+import { getRepository } from "typeorm";
 
 const unauthorized = (res: Response) => {
 
@@ -22,11 +21,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
 
     if(token_fragments.length !== 2) return unauthorized(res);
 
-    const container: Container = global.container;
-
-    const typeorm: Connection = container.get<Connection>('typeorm');
-
-    const apiKeyRepository = typeorm.getRepository(ApiKey);
+    const apiKeyRepository = getRepository(ApiKey);
 
     const record = await apiKeyRepository.findOne({where: [{
         key: token_fragments[0],

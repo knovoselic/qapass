@@ -43,7 +43,7 @@ class AuthController extends BaseController implements interfaces.Controller
             layout: false,
             csrf: req.csrfToken(),
             errors: validation_errors(req),
-            error: req.flash('error')
+            error: req.flash('error')[0]
         });
     }
 
@@ -67,7 +67,7 @@ class AuthController extends BaseController implements interfaces.Controller
             layout: false,
             csrf: req.csrfToken(),
             errors: validation_errors(req),
-            error: req.flash('error')
+            error: req.flash('error')[0]
         });
     }
 

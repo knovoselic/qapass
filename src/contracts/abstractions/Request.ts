@@ -5,6 +5,7 @@ import required from "../../validators/required";
 import string from "../../validators/string";
 import unique from "../../validators/unique";
 import email from "../../validators/email";
+import confirmed from "../../validators/confirmed";
 import max from "../../validators/max";
 import inValues from "../../validators/in";
 import RequestInterface from "../interfaces/Request";
@@ -17,6 +18,7 @@ export default abstract class Request
     protected rule_functions: RuleMapping = {
         required: required,
         string: string,
+        confirmed: confirmed,
         email: email,
         max: max,
         in: inValues,
@@ -82,10 +84,13 @@ export default abstract class Request
 
             const parsed_rule = this.parseRule(rule_fragments[i]);
 
-            let validator_args = [field_value];
+            let validator_args = [
+                req,
+                field,
+                field_value
+            ];
 
             if(parsed_rule.data !== undefined) validator_args.push(parsed_rule.data);
-
 
             if(is_required || this.valueSet(field_value)) {
                 const is_valid = await this.rule_functions[parsed_rule.rule](...validator_args);

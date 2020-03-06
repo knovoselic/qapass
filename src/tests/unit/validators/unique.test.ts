@@ -2,20 +2,23 @@ import unique from '../../../validators/unique';
 import User from '../../../entity/User';
 import { Connection } from 'typeorm';
 import { Container } from 'inversify';
+import { Request } from 'express';
+
+const req = {} as Request;
 
 describe('unique', () => {
     describe('throws error', () => {
         it("when second argument is not string processable by json parse", async () => {
-            await expect(unique('any', 'random')).rejects.toThrowError('Invalid exists schema.');
+            await expect(unique(req, 'rnd', 'any', 'random')).rejects.toThrowError('Invalid exists schema.');
         });
         it("when second argument is string containing json with invalid schema", async () => {
-            await expect(unique('any', JSON.stringify({}))).rejects.toThrowError('Invalid exists schema.');
+            await expect(unique(req, 'rnd', 'any', JSON.stringify({}))).rejects.toThrowError('Invalid exists schema.');
         });
     });
     describe('returns false when', () => {
         it("second argument contains valid schema but first argument is not string", async () => {
             expect(
-                await unique(1, JSON.stringify({
+                await unique(req, 'rnd', 1, JSON.stringify({
                     table: 'users',
                     column: 'email'
                 }))
@@ -32,7 +35,7 @@ describe('unique', () => {
             });
 
             expect(
-                await unique(usr.email, JSON.stringify({
+                await unique(req, 'rnd', usr.email, JSON.stringify({
                     table: 'users',
                     column: 'email'
                 }))
@@ -41,7 +44,7 @@ describe('unique', () => {
     });
     it("returns true when valid arguments and record doesn't exist", async () => {
         expect(
-            await unique('1', JSON.stringify({
+            await unique(req, 'rnd', '1', JSON.stringify({
                 table: 'users',
                 column: 'email'
             }))

@@ -1,4 +1,5 @@
 import Exception from "../errors/Exception"
+import { Request } from 'express';
 
 function getNumberFromString(value: string) {
     if(parseInt(value).toString() == value) return parseInt(value);
@@ -7,7 +8,7 @@ function getNumberFromString(value: string) {
     return undefined;
 }
 
-export default (subject: any, limit: string) => {
+export default (req: Request, field: string, subject: any, limit: string) => {
     if(limit === '') throw new Exception('Invalid max rule definition.');
 
     const evaluable = [

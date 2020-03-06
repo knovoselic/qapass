@@ -1,9 +1,9 @@
 import { knex } from "../helpers";
 import Exception from "../errors/Exception";
 import { Validator } from 'jsonschema';
-import { AdvancedConsoleLogger } from "typeorm";
+import { Request } from 'express';
 
-export default async (subject: any, schema: any) => {
+export default async (req: Request, field: string, subject: any, schema: any) => {
     try {
         schema = JSON.parse(schema);
     } catch (error) {

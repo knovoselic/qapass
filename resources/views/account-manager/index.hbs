@@ -12,6 +12,12 @@
                 ID
             </th>
             <th>
+                Owner
+            </th>
+            <th>
+                Public
+            </th>
+            <th>
                 Username
             </th>
             <th>
@@ -31,6 +37,8 @@
         {{#each accounts}}
             <tr>
                 <td>{{this.id}}</td>
+                <td>{{this.owner}}</td>
+                <td>{{this.public}}</td>
                 <td>{{this.username}}</td>
                 <td>{{this.password}}</td>
                 <td>{{this.host}}</td>
