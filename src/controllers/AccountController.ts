@@ -81,16 +81,12 @@ class AccountController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        let account = null;
+        const account = await this.accountRepository.findOne(id, {where: [
+            {user_id: user.id},
+            {public: true},
+        ]});
 
-        try {
-            account = await this.accountRepository.findOne(id, {where: [
-                {user_id: user.id},
-                {public: true},
-            ]});
-        } catch (error) {
-            throw new Exception('Not found.', 404);
-        }
+        if(!account) throw new Exception('Not found.', 404);
 
         return this.render(res, 'account-manager/edit', {
             account: account,

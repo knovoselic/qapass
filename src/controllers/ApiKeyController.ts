@@ -52,7 +52,7 @@ class ApiKeyController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        let api_key = null;
+        let api_key;
 
         try {
             api_key = await this.apiKeyRepository.save({
