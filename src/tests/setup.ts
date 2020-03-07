@@ -22,6 +22,8 @@ beforeAll(async () => {
     const knex_connection = container.get<knexConnection>('knex');
 
     await knex_connection.migrate.latest();
+
+    await clearDB();
 });
 
 afterEach(async () => {
@@ -37,7 +39,5 @@ afterAll(async () => {
 
     const container = await sp.getContainer();
 
-    const knex_connection = container.get<knexConnection>('knex');
-
-    await knex_connection.migrate.rollback();
+    await clearDB();
 });
