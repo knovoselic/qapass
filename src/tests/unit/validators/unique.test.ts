@@ -7,16 +7,14 @@ import { Request } from 'express';
 const req = {} as Request;
 
 describe('unique', () => {
-    describe('throws error', () => {
-        it("when second argument is not string processable by json parse", async () => {
+    describe('when second argument is not a string processable by json parse or a string containing json with invalid schema', () => {
+        it("throws error", async () => {
             await expect(unique(req, 'rnd', 'any', 'random')).rejects.toThrowError('Invalid exists schema.');
-        });
-        it("when second argument is string containing json with invalid schema", async () => {
             await expect(unique(req, 'rnd', 'any', JSON.stringify({}))).rejects.toThrowError('Invalid exists schema.');
         });
     });
-    describe('returns false when', () => {
-        it("second argument contains valid schema but first argument is not string", async () => {
+    describe('when second argument contains valid schema but first argument is not string', () => {
+        it("returns false", async () => {
             expect(
                 await unique(req, 'rnd', 1, JSON.stringify({
                     table: 'users',
@@ -24,7 +22,9 @@ describe('unique', () => {
                 }))
             ).toBe(false);
         });
-        it("valid arguments but record exists", async () => {
+    });
+    describe('when valid arguments but record exists', () => {
+        it("returns false", async () => {
             const container = global.container as Container;
 
             const typeorm = container.get<Connection>('typeorm');
@@ -42,12 +42,14 @@ describe('unique', () => {
             ).toBe(false);
         });
     });
-    it("returns true when valid arguments and record doesn't exist", async () => {
-        expect(
-            await unique(req, 'rnd', '1', JSON.stringify({
-                table: 'users',
-                column: 'email'
-            }))
-        ).toBe(true);
+    describe("when valid arguments and record doesn't exist", () => {
+        it("returns true", async () => {
+            expect(
+                await unique(req, 'rnd', '1', JSON.stringify({
+                    table: 'users',
+                    column: 'email'
+                }))
+            ).toBe(true);
+        });
     });
 });

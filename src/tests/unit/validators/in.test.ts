@@ -4,15 +4,15 @@ import { Request } from 'express';
 const req = {} as Request;
 
 describe('in', () => {
-    describe('returns false for first argument that is', () => {
-        it("not of string type", async () => {
+    describe('when first argument is not of string type or not part of csv argument two', () => {
+        it("returns false", async () => {
             expect(inValidator(req, 'rnd', {}, '1,2,3')).toBe(false);
-        });
-        it("not part of csv argument two", async () => {
             expect(inValidator(req, 'rnd', '4', '1,2,3')).toBe(false);
         });
     })
-    it("returns true for first argument that is part of csv argument two", async () => {
-        expect(inValidator(req, 'rnd', '1', '1,2,3')).toBe(true);
+    describe('when first argument is string and is part of csv argument two', () => {
+        it("returns true", async () => {
+            expect(inValidator(req, 'rnd', '1', '1,2,3')).toBe(true);
+        });
     });
 });

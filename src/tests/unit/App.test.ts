@@ -1,10 +1,5 @@
 import app from '../../App';
-import { getRepository } from 'typeorm';
-import User from '../../entity/User';
-import Account from '../../entity/Account';
-import ApiKey from '../../entity/ApiKey';
 import { Application } from 'express';
-import agent from 'supertest';
 
 describe('App.getApplication', () => {
     it('returns a singleton e.Application instance', async () => {
