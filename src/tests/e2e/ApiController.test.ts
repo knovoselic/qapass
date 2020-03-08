@@ -1,24 +1,28 @@
 import app from '../../App';
-import { getRepository } from 'typeorm';
 import User from '../../entity/User';
 import Account from '../../entity/Account';
 import ApiKey from '../../entity/ApiKey';
 import { Application } from 'express';
 import agent from 'supertest';
+import { typeorm } from '../../helpers';
+import { runInTransaction } from 'typeorm-test-transactions';
 
-let user: User;
-let application: Application;
 const key = 'key';
 const secret = 'secret';
 
-beforeEach(async () => {
+const runBefore = async () => {
+    let user: User;
+    let application: Application;
+
     application = await app.getApplication();
 
-    const accountRepo = getRepository(Account);
+    const conn = typeorm();
 
-    const userRepo = getRepository(User);
+    const accountRepo = conn.getRepository(Account);
 
-    const apiKeyRepo = getRepository(ApiKey);
+    const userRepo = conn.getRepository(User);
+
+    const apiKeyRepo = conn.getRepository(ApiKey);
 
     user = await userRepo.save({
         email: 'test1@test.com',
@@ -71,11 +75,15 @@ beforeEach(async () => {
         description: 'test4',
         public: true,
     });
-});
+
+    return application;
+}
 
 describe('ApiController.get', () => {
     describe("when no authorization token or invalid value", () => {
-        it("returns unauthorized response", async () => {
+        it("returns unauthorized response", runInTransaction(async () => {
+            const application = await runBefore();
+
             let response = await agent(application)
                 .get('/api/passwords');
 
@@ -92,20 +100,24 @@ describe('ApiController.get', () => {
                 .set('Authorization', `Bearer ${key}:${secret}1`);
 
             expect(response.status).toBe(401);
-        });
+        }));
     });
     describe("when filtered by host with value host1", () => {
-        it("returns three records", async () => {
+        it("returns three records", runInTransaction(async () => {
+            const application = await runBefore();
+
             const response = await agent(application)
                 .get('/api/passwords')
                 .set('Authorization', `Bearer ${key}:${secret}`);
 
             expect(response.status).toBe(200);
             expect(response.body.length).toBe(3);
-        });
+        }));
     });
     describe("when filtered by host with value host1", () => {
-        it("returns two records", async () => {
+        it("returns two records", runInTransaction(async () => {
+            const application = await runBefore();
+
             const response = await agent(application)
                 .get('/api/passwords')
                 .set('Authorization', `Bearer ${key}:${secret}`)
@@ -113,6 +125,6 @@ describe('ApiController.get', () => {
 
             expect(response.status).toBe(200);
             expect(response.body.length).toBe(2);
-        });
+        }));
     });
 });

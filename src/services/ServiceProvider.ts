@@ -1,6 +1,5 @@
 import { Container, injectable, decorate } from 'inversify';
 import 'reflect-metadata';
-import knex from 'knex';
 import '../controllers/AuthController';
 import '../controllers/AccountController';
 import '../controllers/ApiKeyController';
@@ -49,26 +48,6 @@ export default class ServiceProvider
     }
 
     protected database = async () => {
-        let port: number = 3306;
-
-        if(process.env.DB_PORT) {
-            port = parseInt(process.env.DB_PORT);
-        }
-
-        const knexConn = knex({
-            client: 'mysql',
-            connection: {
-                host: process.env.DB_HOST,
-                user: process.env.DB_USERNAME,
-                password: process.env.DB_PASSWORD,
-                database: process.env.DB_DATABASE,
-                port: port
-            }
-        });
-
-        this.container
-            .bind<knex>('knex')
-            .toConstantValue(knexConn);
 
         const connection = await createConnection();
 

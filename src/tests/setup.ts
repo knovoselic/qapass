@@ -1,43 +1,34 @@
 import ServiceProvider from '../services/ServiceProvider';
-import { Container } from 'inversify';
-import knexConnection from 'knex';
+import { initialiseTestTransactions } from 'typeorm-test-transactions';
+import knex from 'knex';
 
-export async function clearDB() {
-    const container = global.container as Container;
-
-    const knex_connection = container.get<knexConnection>('knex');
-
-    await knex_connection.table('users').delete();
-}
+initialiseTestTransactions();
 
 beforeAll(async () => {
     const sp = await ServiceProvider.get();
 
-    (<any> global).serviceProvider = sp;
+    (<any>global).sp = sp;
 
     const container = await sp.getContainer();
 
     global.container = container;
 
-    const knex_connection = container.get<knexConnection>('knex');
+    let port = 3306;
 
-    await knex_connection.migrate.latest();
+    if(process.env.DB_PORT) {
+        port = parseInt(process.env.DB_PORT);
+    }
 
-    await clearDB();
+    await knex({
+        client: 'mysql',
+        connection: {
+            host: process.env.DB_HOST,
+            user: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_DATABASE,
+            port: port
+        }
+    }).migrate.latest();
 });
 
-afterEach(async () => {
-    jest.restoreAllMocks();
-
-    await clearDB();
-});
-
-afterAll(async () => {
-    const sp = await ServiceProvider.get();
-
-    (<any> global).serviceProvider = sp;
-
-    const container = await sp.getContainer();
-
-    await clearDB();
-});
+afterEach(() => jest.restoreAllMocks());

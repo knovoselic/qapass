@@ -1,15 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import * as helpers from '../../../helpers';
 import User from '../../../entity/User';
-import { getRepository, Repository } from 'typeorm';
+import { Repository, Connection } from 'typeorm';
 import AccountController from '../../../controllers/AccountController';
 import Account from '../../../entity/Account';
 import AccountIndexPageTransformer from '../../../transformers/AccountIndexPageTransformer';
 import Exception from '../../../errors/Exception';
+import { runInTransaction } from 'typeorm-test-transactions';
 
-var user: User,
-    authUserSpy: jest.SpyInstance,
-    validationHelperSpy: jest.SpyInstance,
+let validationHelperSpy: jest.SpyInstance,
     find: jest.Mock, findOne: jest.Mock,
     save: jest.Mock, update: jest.Mock,
     deleteFn: jest.Mock,
@@ -22,21 +21,15 @@ var user: User,
     req: Request,
     redirect: jest.Mock,
     res:  Response,
-    next: NextFunction;
+    next: NextFunction,
+    typeorm: Connection;
 
 beforeEach(async () => {
-    user = await getRepository(User).save({
-        email: 'test@test.com',
-        password: '123123'
-    });
-
-    authUserSpy = jest.spyOn(helpers, 'auth_user')
-
-    authUserSpy.mockImplementation(() => user);
-
     validationHelperSpy = jest.spyOn(helpers, 'validation_errors')
 
     validationHelperSpy.mockImplementation(jest.fn());
+
+    typeorm = helpers.typeorm();
 
     find = jest.fn();
     findOne = jest.fn();
@@ -81,7 +74,16 @@ beforeEach(async () => {
 });
 
 describe('AccountController.get', () => {
-    it("returns rendered page", async () => {
+    it("returns rendered page", runInTransaction(async () => {
+        const user: User = await typeorm.getRepository(User).save({
+            email: 'test@test.com',
+            password: '123123'
+        });
+
+        const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+        authUserSpy.mockImplementation(() => user);
+
         await controller.index(req, res, next);
 
         expect(authUserSpy).toHaveBeenCalledTimes(1);
@@ -96,7 +98,7 @@ describe('AccountController.get', () => {
         });
         expect(renderSpy).toHaveBeenCalledTimes(1);
         expect(renderSpy).toHaveBeenLastCalledWith(res, 'account-manager/index', expect.anything());
-    });
+    }));
 });
 
 describe('AccountController.create', () => {
@@ -110,7 +112,16 @@ describe('AccountController.create', () => {
 
 describe('AccountController.store', () => {
     describe('when no database error', () => {
-        it("saves account and redirects user", async () => {
+        it("saves account and redirects user", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             await controller.store(req, res, next);
 
             expect(authUserSpy).toHaveBeenCalledTimes(1);
@@ -128,10 +139,19 @@ describe('AccountController.store', () => {
 
             expect(redirect).toHaveBeenCalledTimes(1);
             expect(redirect).toHaveBeenLastCalledWith('/');
-        });
+        }));
     });
     describe('when database error', () => {
-        it("throws 'Internal error' exception", async () => {
+        it("throws 'Internal error' exception", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             save.mockImplementationOnce(() => {
                 throw new Exception('Internal error.', 500)
             });
@@ -158,13 +178,22 @@ describe('AccountController.store', () => {
             });
 
             expect(error).toMatchObject(new Exception('Internal error.', 500));
-        });
+        }));
     });
 });
 
 describe('AccountController.edit', () => {
     describe('when record exists', () => {
-        it("returns rendered page", async () => {
+        it("returns rendered page", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             findOne.mockImplementationOnce(() => {
                 return '1';
             });
@@ -182,10 +211,19 @@ describe('AccountController.edit', () => {
 
             expect(renderSpy).toHaveBeenCalledTimes(1);
             expect(renderSpy).toHaveBeenLastCalledWith(res, 'account-manager/edit', expect.anything());
-        });
+        }));
     });
     describe("when record doesn't exist", () => {
-        it("throws 'Not found.' error", async () => {
+        it("throws 'Not found.' error", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             findOne.mockImplementationOnce(() => undefined);
 
             let error;
@@ -206,13 +244,22 @@ describe('AccountController.edit', () => {
             ]});
 
             expect(error).toMatchObject(new Exception('Not found.', 404));
-        });
+        }));
     });
 });
 
 describe('AccountController.update', () => {
     describe('when record exists', () => {
-        it("updates account and redirects to root page", async () => {
+        it("updates account and redirects to root page", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             findOne.mockImplementationOnce(() => {
                 return '1';
             });
@@ -240,10 +287,19 @@ describe('AccountController.update', () => {
 
             expect(redirect).toHaveBeenCalledTimes(1);
             expect(redirect).toHaveBeenLastCalledWith('/');
-        });
+        }));
     });
     describe("when record doesn't exist", () => {
-        it("throws 'Not found.' error", async () => {
+        it("throws 'Not found.' error", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             findOne.mockImplementationOnce(() => undefined);
 
             let error;
@@ -264,13 +320,22 @@ describe('AccountController.update', () => {
             ]});
 
             expect(error).toMatchObject(new Exception('Not found.', 404));
-        });
+        }));
     });
 });
 
 describe('AccountController.delete', () => {
     describe('when record exists', () => {
-        it("deletes account and redirects to root page", async () => {
+        it("deletes account and redirects to root page", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             findOne.mockImplementationOnce(() => {
                 return '1';
             });
@@ -291,10 +356,19 @@ describe('AccountController.delete', () => {
 
             expect(redirect).toHaveBeenCalledTimes(1);
             expect(redirect).toHaveBeenLastCalledWith('/');
-        });
+        }));
     });
     describe("when record doesn't exist", () => {
-        it("throws 'Not found.' error", async () => {
+        it("throws 'Not found.' error", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             findOne.mockImplementationOnce(() => undefined);
 
             let error;
@@ -315,6 +389,6 @@ describe('AccountController.delete', () => {
             ]});
 
             expect(error).toMatchObject(new Exception('Not found.', 404));
-        });
+        }));
     });
 });

@@ -1,17 +1,15 @@
-import { Container } from "inversify";
-import { Connection } from "typeorm";
+import { typeorm } from "../../../helpers";
 import User from "../../../entity/User";
 import ApiKey from "../../../entity/ApiKey";
 import ApiKeyListTransformer from "../../../transformers/ApiKeyListTransformer";
+import { runInTransaction } from "typeorm-test-transactions";
 
 describe('ApiKeyListTransformer.transform', () => {
-    it("returns transformed ApiKey object", async () => {
-        const container: Container = global.container;
+    it("returns transformed ApiKey object", runInTransaction(async () => {
+        const conn = typeorm();
 
-        const typeorm = container.get<Connection>('typeorm');
-
-        const userRepo = typeorm.getRepository(User);
-        const apiKeyRepo = typeorm.getRepository(ApiKey);
+        const userRepo = conn.getRepository(User);
+        const apiKeyRepo = conn.getRepository(ApiKey);
 
         const usr = await userRepo.save({
             email: 'test1@test.com',
@@ -46,5 +44,5 @@ describe('ApiKeyListTransformer.transform', () => {
             key: apiKey2.key,
             last_usage_at: date.toLocaleString()
         });
-    });
+    }));
 });

@@ -1,13 +1,15 @@
 import { Request } from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../../../entity/User';
-import { Connection, createConnection } from 'typeorm';
+import { Connection } from 'typeorm';
 import { Container } from 'inversify';
 import Auth from '../../../services/Auth';
+import { runInTransaction } from 'typeorm-test-transactions';
+import { typeorm } from '../../../helpers';
 
 describe('Auth.login', () => {
     describe('when invalid email and password combination', () => {
-        it("resolves to 'Invalid email or password.' error", async () => {
+        it("resolves to 'Invalid email or password.' error", runInTransaction(async () => {
             const container: Container = global.container;
 
             const auth = container.get<Auth>('Auth');
@@ -27,12 +29,10 @@ describe('Auth.login', () => {
                     );
                 });
 
-            const typeorm = container.get<Connection>('typeorm');
-
             const salt = bcrypt.genSaltSync(10);
             const hash = bcrypt.hashSync(pass, salt);
 
-            await typeorm.getRepository(User).save({
+            await typeorm().getRepository(User).save({
                 email: 'test@test.com',
                 password: hash
             });
@@ -44,13 +44,13 @@ describe('Auth.login', () => {
                         null, false, {message: 'Invalid email or password.'}
                     );
                 });
-        });
+        }));
     });
     describe('when valid credentials', () => {
-        it("resolves to User instance", async () => {
+        it("resolves to User instance", runInTransaction(async () => {
             const container: Container = global.container;
 
-            const typeorm = container.get<Connection>('typeorm');
+            const conn = typeorm();
 
             const email = 'test@test.com';
             const pass = '123123';
@@ -58,12 +58,12 @@ describe('Auth.login', () => {
             const salt = bcrypt.genSaltSync(10);
             const hash = bcrypt.hashSync(pass, salt);
 
-            await typeorm.getRepository(User).save({
+            await conn.getRepository(User).save({
                 email: email,
                 password: hash
             });
 
-            const usr = await typeorm.getRepository(User).findOne({'email': email});
+            const usr = await conn.getRepository(User).findOne({'email': email});
 
             const auth = container.get<Auth>('Auth');
 
@@ -78,16 +78,14 @@ describe('Auth.login', () => {
                 expect(done).toHaveBeenCalledTimes(1);
                 expect(done).toHaveBeenLastCalledWith(null, usr);
             });
-        });
+        }));
     });
 });
 
 describe('Auth.register', () => {
     describe('when no database transaction error', () => {
-        it("resolves to User instance", async () => {
+        it("resolves to User instance", runInTransaction(async () => {
             const container: Container = global.container;
-
-            const typeorm = container.get<Connection>('typeorm');
 
             const auth = container.get<Auth>('Auth');
 
@@ -101,7 +99,7 @@ describe('Auth.register', () => {
                 '123123',
                 done
             ).then(async fulfilled => {
-                await typeorm.getRepository(User).findOne({'email': email}).
+                await typeorm().getRepository(User).findOne({'email': email}).
                     then(f => {
                         /**
                          * Hack for typeorm.
@@ -118,13 +116,13 @@ describe('Auth.register', () => {
                     })
 
             });
-        });
+        }));
     });
     describe('when database transaction throws error', () => {
-        it("resolves to that error", async () => {
+        it("resolves to that error", runInTransaction(async () => {
             const container: Container = global.container;
 
-            const typeorm = container.get<Connection>('typeorm');
+            const conn = typeorm();
 
             const email = 'test@test.com';
             const pass = '123123';
@@ -132,12 +130,12 @@ describe('Auth.register', () => {
             const salt = bcrypt.genSaltSync(10);
             const hash = bcrypt.hashSync(pass, salt);
 
-            await typeorm.getRepository(User).save({
+            await conn.getRepository(User).save({
                 email: email,
                 password: hash
             });
 
-            await typeorm.getRepository(User).findOne({'email': email});
+            await conn.getRepository(User).findOne({'email': email});
 
             const auth = container.get<Auth>('Auth');
 
@@ -158,6 +156,6 @@ describe('Auth.register', () => {
                 expect(typeof done.mock.calls[0][2]).toBe('object');
                 expect(typeof done.mock.calls[0][2].message).toBe('string');
             });
-        });
+        }));
     });
 });

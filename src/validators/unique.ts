@@ -1,4 +1,4 @@
-import { knex } from "../helpers";
+import { typeorm } from "../helpers";
 import Exception from "../errors/Exception";
 import { Validator } from 'jsonschema';
 import { Request } from 'express';
@@ -31,9 +31,11 @@ export default async (req: Request, field: string, subject: any, schema: any) =>
 
     if(typeof subject !== 'string') return false;
 
-    const record = await knex().table(schema.table)
-        .where(schema.column, subject)
-        .first();
+    const record = await typeorm().query(`
+            SELECT 1 from ${schema.table}
+            WHERE ${schema.table}.${schema.column} = ?
+            LIMIT 1;
+        `, [subject]);
 
-    return record ? false : true;
+    return record.length == 0 ? true : false;
 }

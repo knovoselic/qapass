@@ -1,13 +1,14 @@
 import apiAuth from '../../../middlewares/api-auth';
 import { Request, Response, NextFunction } from 'express';
 import { IncomingHttpHeaders } from 'http';
-import { getRepository } from 'typeorm';
 import User from '../../../entity/User';
 import ApiKey from '../../../entity/ApiKey';
+import { runInTransaction } from 'typeorm-test-transactions';
+import { typeorm } from '../../../helpers';
 
 describe('api-auth', () => {
     describe('when authorization header is not set, of invalid format or invalid', () => {
-        it('returns unauthorized json response', async () => {
+        it('returns unauthorized json response', runInTransaction(async () => {
             let req = {
                 xhr: true,
                 headers: {
@@ -47,16 +48,18 @@ describe('api-auth', () => {
 
             expect(status).toHaveBeenCalledTimes(3);
             expect(status).toHaveBeenLastCalledWith(401);
-        });
+        }));
     });
     describe('when authorization header is set, of valid format and valid', () => {
-        it('calls next function', async () => {
-            const u = await getRepository(User).save({
+        it('calls next function', runInTransaction(async () => {
+            const conn = typeorm();
+
+            const u = await conn.getRepository(User).save({
                 email: 'test@test.com',
                 password: '123123'
             });
 
-            const apiKey = await getRepository(ApiKey).save({
+            const apiKey = await conn.getRepository(ApiKey).save({
                 user_id: u.id,
                 key: 'key',
                 secret: 'secret'
@@ -76,6 +79,6 @@ describe('api-auth', () => {
             await apiAuth(req, res, next);
 
             expect(next).toHaveBeenCalledTimes(1);
-        });
+        }));
     });
 });

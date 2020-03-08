@@ -1,17 +1,16 @@
-import { getCustomRepository, Connection } from "typeorm";
+import { getCustomRepository } from "typeorm";
 import AccountRepository from "../../../repositories/AccountRepository";
-import { Container } from "inversify";
 import User from "../../../entity/User";
+import { typeorm } from "../../../helpers";
+import { runInTransaction } from "typeorm-test-transactions";
 
 describe('AccountRepository.ownedByUserOrPublic', () => {
-    it('returns array of accounts that belong to users or are public', async () => {
+    it('returns array of accounts that belong to users or are public', runInTransaction(async () => {
         const accountRepo = getCustomRepository(AccountRepository);
 
-        const container: Container = global.container;
+        const conn = typeorm();
 
-        const typeorm = container.get<Connection>('typeorm');
-
-        const userRepo = typeorm.getRepository(User);
+        const userRepo = conn.getRepository(User);
 
         const usr1 = await userRepo.save({
             email: 'test1@test.com',
@@ -42,5 +41,5 @@ describe('AccountRepository.ownedByUserOrPublic', () => {
         expect(r.length).toBe(2);
         expect(r[0].id).toBe(account1.id.toString());
         expect(r[1].id).toBe(account2.id.toString());
-    });
+    }));
 });

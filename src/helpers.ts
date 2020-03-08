@@ -1,6 +1,5 @@
 import { Request } from "express";
 import { Container } from "inversify";
-import knexConnection  from "knex";
 import User from './entity/User';
 import { Connection } from 'typeorm';
 import Exception from "./errors/Exception";
@@ -14,10 +13,10 @@ export const accepts_json = (req: Request): Boolean => {
     return false;
 }
 
-export const knex = () => {
+export const typeorm = () => {
     const container: Container = global.container;
 
-    return container.get<knexConnection>('knex');
+    return container.get<Connection>('typeorm');
 }
 
 export const validation_errors = (req: Request) => {

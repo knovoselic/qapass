@@ -38,6 +38,7 @@
     "supertest": "^4.0.2",
     "ts-jest": "^25.2.1",
     "ts-node": "^7.0.1",
+    "typeorm-test-transactions": "^1.10.0",
     "typescript": "^3.2.2"
   },
   "dependencies": {

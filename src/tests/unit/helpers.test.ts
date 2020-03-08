@@ -1,10 +1,9 @@
 import * as helpers from '../../helpers';
 import { Request } from 'express';
 import { IncomingHttpHeaders } from 'http';
-import knexConnection  from "knex";
 import User from '../../entity/User';
-import { Connection } from 'typeorm';
 import { Container } from 'inversify';
+import { runInTransaction } from 'typeorm-test-transactions';
 
 describe('accepts_json', () => {
     describe('when xhr request', () => {
@@ -45,16 +44,6 @@ describe('accepts_json', () => {
     });
 });
 
-describe('knex', () => {
-    it("returns knex connection", async () => {
-        const container = global.container as Container;
-
-        const knex_connection = container.get<knexConnection>('knex');
-
-        expect(helpers.knex()).toEqual(knex_connection);
-    });
-});
-
 describe('user', () => {
     describe("when req.user is undefined or doesn't exist", () => {
         it("returns undefined", async () => {
@@ -68,12 +57,8 @@ describe('user', () => {
         });
     });
     describe('when req.user value does exist in database', () => {
-        it("returns that User instance", async () => {
-            const container = global.container as Container;
-
-            const typeorm = container.get<Connection>('typeorm');
-
-            const u = await typeorm.getRepository(User).save({
+        it("returns that User instance", runInTransaction(async () => {
+            const u = await helpers.typeorm().getRepository(User).save({
                 email: 'test@test.com',
                 password: '123123'
             });
@@ -85,7 +70,7 @@ describe('user', () => {
             const record = await helpers.user(req);
 
             expect(record?.id == u.id).toEqual(true);
-        });
+        }));
     });
 });
 
@@ -102,12 +87,8 @@ describe('auth_user', () => {
         });
     });
     describe('when req.user value does exist in database', () => {
-        it("returns that User instance", async () => {
-            const container = global.container as Container;
-
-            const typeorm = container.get<Connection>('typeorm');
-
-            const u = await typeorm.getRepository(User).save({
+        it("returns that User instance", runInTransaction(async () => {
+            const u = await helpers.typeorm().getRepository(User).save({
                 email: 'test@test.com',
                 password: '123123'
             });
@@ -119,7 +100,7 @@ describe('auth_user', () => {
             const record = await helpers.auth_user(req);
 
             expect(record?.id == u.id).toEqual(true);
-        });
+        }));
     });
 });
 

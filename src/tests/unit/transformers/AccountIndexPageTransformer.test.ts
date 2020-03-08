@@ -1,17 +1,15 @@
-import { Container } from "inversify";
-import { Connection } from "typeorm";
+import { typeorm } from "../../../helpers";
 import User from "../../../entity/User";
 import Account from "../../../entity/Account";
 import AccountIndexPageTransformer from "../../../transformers/AccountIndexPageTransformer";
+import { runInTransaction } from "typeorm-test-transactions";
 
 describe('ApiKeyListTransformer.transform', () => {
-    it("returns transformed Account object", async () => {
-        const container: Container = global.container;
+    it("returns transformed Account object", runInTransaction(async () => {
+        const conn = typeorm();
 
-        const typeorm = container.get<Connection>('typeorm');
-
-        const userRepo = typeorm.getRepository(User);
-        const accountRepo = typeorm.getRepository(Account);
+        const userRepo = conn.getRepository(User);
+        const accountRepo = conn.getRepository(Account);
 
         const transformer = new AccountIndexPageTransformer;
 
@@ -56,5 +54,5 @@ describe('ApiKeyListTransformer.transform', () => {
             host: account.host,
             description: account.description,
         });
-    });
+    }));
 });

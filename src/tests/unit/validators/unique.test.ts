@@ -1,8 +1,7 @@
 import unique from '../../../validators/unique';
 import User from '../../../entity/User';
-import { Connection } from 'typeorm';
-import { Container } from 'inversify';
 import { Request } from 'express';
+import { typeorm } from '../../../helpers';
 
 const req = {} as Request;
 
@@ -25,11 +24,7 @@ describe('unique', () => {
     });
     describe('when valid arguments but record exists', () => {
         it("returns false", async () => {
-            const container = global.container as Container;
-
-            const typeorm = container.get<Connection>('typeorm');
-
-            const usr = await typeorm.getRepository(User).save({
+            const usr = await typeorm().getRepository(User).save({
                 email: 'test@test.com',
                 password: '123123'
             });
@@ -40,6 +35,13 @@ describe('unique', () => {
                     column: 'email'
                 }))
             ).toBe(false);
+
+            /**
+             * Delete record manualy because typeorm.query
+             * inside unique() creates new query runner
+             * which is not inside transactional context.
+             */
+            await typeorm().getRepository(User).delete(usr);
         });
     });
     describe("when valid arguments and record doesn't exist", () => {

@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import * as helpers from '../../../helpers';
 import User from '../../../entity/User';
-import { getRepository, Repository } from 'typeorm';
+import { Repository, Connection } from 'typeorm';
 import ApiKeyController from '../../../controllers/ApiKeyController';
 import ApiKey from '../../../entity/ApiKey';
 import ApiKeyListTransformer from '../../../transformers/ApiKeyListTransformer';
 import Exception from '../../../errors/Exception';
+import { runInTransaction } from 'typeorm-test-transactions';
 
-var user: User,
-    authUserSpy: jest.SpyInstance,
+var typeorm: Connection,
     validationHelperSpy: jest.SpyInstance,
     find: jest.Mock, findOne: jest.Mock,
     save: jest.Mock, update: jest.Mock,
@@ -26,14 +26,7 @@ var user: User,
     next: NextFunction;
 
 beforeEach(async () => {
-    user = await getRepository(User).save({
-        email: 'test@test.com',
-        password: '123123'
-    });
-
-    authUserSpy = jest.spyOn(helpers, 'auth_user')
-
-    authUserSpy.mockImplementation(() => user);
+    typeorm = helpers.typeorm();
 
     validationHelperSpy = jest.spyOn(helpers, 'validation_errors')
 
@@ -84,7 +77,16 @@ beforeEach(async () => {
 });
 
 describe('ApiKeyController.get', () => {
-    it("returns rendered page", async () => {
+    it("returns rendered page", runInTransaction(async () => {
+        const user: User = await typeorm.getRepository(User).save({
+            email: 'test@test.com',
+            password: '123123'
+        });
+
+        const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+        authUserSpy.mockImplementation(() => user);
+
         await controller.index(req, res, next);
 
         flash.mockImplementationOnce(() => [JSON.stringify({})]);
@@ -108,12 +110,21 @@ describe('ApiKeyController.get', () => {
         ]});
         expect(renderSpy).toHaveBeenCalledTimes(2);
         expect(renderSpy).toHaveBeenLastCalledWith(res, 'api-keys/index', expect.anything());
-    });
+    }));
 });
 
 describe('ApiKeyController.generate', () => {
     describe('when no database error', () => {
-        it("it saves api key and redirects to /api-keys page", async () => {
+        it("it saves api key and redirects to /api-keys page", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             save.mockImplementationOnce(() => {
                 return {};
             });
@@ -128,10 +139,19 @@ describe('ApiKeyController.generate', () => {
             expect(flash).toHaveBeenLastCalledWith('generated', JSON.stringify({}));
             expect(redirect).toHaveBeenCalledTimes(1);
             expect(redirect).toHaveBeenLastCalledWith('/api-keys');
-        });
+        }));
     });
     describe('when database error', () => {
-        it("throws 'Internal error' exception", async () => {
+        it("throws 'Internal error' exception", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             save.mockImplementationOnce(() => {
                 throw new Exception('Internal error.', 500)
             });
@@ -151,13 +171,22 @@ describe('ApiKeyController.generate', () => {
             expect(save).toHaveBeenLastCalledWith(expect.anything());
 
             expect(error).toMatchObject(new Exception('Internal error.', 500));
-        });
+        }));
     });
 });
 
 describe('ApiKeyController.delete', () => {
     describe('when record exists', () => {
-        it("deletes account and redirects to root page", async () => {
+        it("deletes account and redirects to root page", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             findOne.mockImplementationOnce(() => {
                 return '1';
             });
@@ -177,10 +206,19 @@ describe('ApiKeyController.delete', () => {
 
             expect(redirect).toHaveBeenCalledTimes(1);
             expect(redirect).toHaveBeenLastCalledWith('/api-keys');
-        });
+        }));
     });
     describe("when record doesn't exist", () => {
-        it("throws 'Not found.' error", async () => {
+        it("throws 'Not found.' error", runInTransaction(async () => {
+            const user: User = await typeorm.getRepository(User).save({
+                email: 'test@test.com',
+                password: '123123'
+            });
+
+            const authUserSpy: jest.SpyInstance = jest.spyOn(helpers, 'auth_user')
+
+            authUserSpy.mockImplementation(() => user);
+
             findOne.mockImplementationOnce(() => undefined);
 
             let error;
@@ -200,6 +238,6 @@ describe('ApiKeyController.delete', () => {
             ]});
 
             expect(error).toMatchObject(new Exception('Not found.', 404));
-        });
+        }));
     });
 });
