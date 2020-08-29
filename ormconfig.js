@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV === 'test') {
+     process.env.DB_DATABASE = `${process.env.DB_DATABASE}_test`
+}
+
 module.exports = {
     "type": "mysql",
     "host": process.env.DB_HOST,
