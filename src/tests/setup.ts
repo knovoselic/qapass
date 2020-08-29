@@ -1,5 +1,6 @@
 import ServiceProvider from '../services/ServiceProvider';
 import { initialiseTestTransactions } from 'typeorm-test-transactions';
+import { getConnection } from 'typeorm';
 import knex from 'knex';
 
 initialiseTestTransactions();
@@ -19,7 +20,7 @@ beforeAll(async () => {
         port = parseInt(process.env.DB_PORT);
     }
 
-    await knex({
+    const knexInstance = knex({
         client: 'mysql',
         connection: {
             host: process.env.DB_HOST,
@@ -28,7 +29,15 @@ beforeAll(async () => {
             database: process.env.DB_DATABASE,
             port: port
         }
-    }).migrate.latest();
+    });
+    
+    await knexInstance.migrate.latest().finally(() => {
+        return knexInstance.destroy();
+    });
+});
+
+afterAll(async () => {
+    await getConnection().close();
 });
 
 afterEach(() => jest.restoreAllMocks());
