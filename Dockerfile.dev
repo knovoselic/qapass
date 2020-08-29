@@ -3,6 +3,8 @@ FROM node:12-alpine
 ENV NODE_ENV development
 WORKDIR /usr/src/app
 
+RUN apk add git
+
 USER node
 
 EXPOSE 3000
