@@ -1,7 +1,7 @@
 {
-  "name": "code-cons",
+  "name": "qapass",
   "version": "0.0.1",
-  "description": "CodeCons app",
+  "description": "QA Password Manager",
   "main": "src/index.ts",
   "scripts": {
     "start-server": "./node_modules/.bin/ts-node --files ./src/index.ts",

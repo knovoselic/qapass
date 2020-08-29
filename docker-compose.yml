@@ -1,11 +1,8 @@
 version: '3'
-
 services:
-
     app:
-        image: codecons:prod
+        image: com.codecons.qapass:prod
         restart: always
-        container_name: code_cons_app
         environment:
             APP_ENV: production
             APP_SECRET: codeconssecret
@@ -24,12 +21,11 @@ services:
         depends_on:
             - mysql
         networks:
-            - zadatak0
+            - qapass
 
     mysql:
         image: mysql:5.7.25
         restart: always
-        container_name: code_cons_mysql
         environment:
             MYSQL_ROOT_PASSWORD: codecons
             MYSQL_DATABASE: codecons
@@ -38,7 +34,7 @@ services:
         ports:
             - 33061
         networks:
-            - zadatak0
+            - qapass
 
 networks:
-    zadatak0:
+    qapass:
