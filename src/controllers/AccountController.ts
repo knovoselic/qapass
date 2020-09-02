@@ -81,9 +81,9 @@ class AccountController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        const account = await this.accountRepository.findOne(id, {where: [
-            {user_id: user.id},
-            {public: true},
+        const account = await this.accountRepository.findOne({where: [
+            {id: id, user_id: user.id},
+            {id: id, public: true},
         ]});
 
         if(!account) throw new Exception('Not found.', 404);
@@ -101,9 +101,9 @@ class AccountController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        const account = await this.accountRepository.findOne(id, {where: [
-            {user_id: user.id},
-            {public: true},
+        const account = await this.accountRepository.findOne({where: [
+            {id: id, user_id: user.id},
+            {id: id, public: true},
         ]});
 
         if(!account) throw new Exception('Not found.', 404);
@@ -124,9 +124,9 @@ class AccountController extends BaseController implements interfaces.Controller
     {
         const user = await auth_user(req);
 
-        const account = await this.accountRepository.findOne(id, {where: [
-            {user_id: user.id},
-            {public: true},
+        const account = await this.accountRepository.findOne({where: [
+            {id: id, user_id: user.id},
+            {id: id, public: true},
         ]});
 
         if(!account) throw new Exception('Not found.', 404);

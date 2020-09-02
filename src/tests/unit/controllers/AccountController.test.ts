@@ -204,9 +204,9 @@ describe('AccountController.edit', () => {
             expect(authUserSpy).toHaveBeenLastCalledWith(req);
 
             expect(findOne).toHaveBeenCalledTimes(1);
-            expect(findOne).toHaveBeenLastCalledWith('1', {where: [
-                {user_id: user.id},
-                {public: true},
+            expect(findOne).toHaveBeenLastCalledWith({where: [
+                {id: '1', user_id: user.id},
+                {id : '1', public: true},
             ]});
 
             expect(renderSpy).toHaveBeenCalledTimes(1);
@@ -238,9 +238,9 @@ describe('AccountController.edit', () => {
             expect(authUserSpy).toHaveBeenLastCalledWith(req);
 
             expect(findOne).toHaveBeenCalledTimes(1);
-            expect(findOne).toHaveBeenLastCalledWith('1', {where: [
-                {user_id: user.id},
-                {public: true},
+            expect(findOne).toHaveBeenLastCalledWith({where: [
+                {id: '1', user_id: user.id},
+                {id : '1', public: true},
             ]});
 
             expect(error).toMatchObject(new Exception('Not found.', 404));
@@ -270,9 +270,9 @@ describe('AccountController.update', () => {
             expect(authUserSpy).toHaveBeenLastCalledWith(req);
 
             expect(findOne).toHaveBeenCalledTimes(1);
-            expect(findOne).toHaveBeenLastCalledWith('1', {where: [
-                {user_id: user.id},
-                {public: true},
+            expect(findOne).toHaveBeenLastCalledWith({where: [
+                {id: '1', user_id: user.id},
+                {id : '1', public: true},
             ]});
 
             expect(update).toHaveBeenCalledTimes(1);
@@ -313,9 +313,9 @@ describe('AccountController.update', () => {
             expect(authUserSpy).toHaveBeenLastCalledWith(req);
 
             expect(findOne).toHaveBeenCalledTimes(1);
-            expect(findOne).toHaveBeenLastCalledWith('1', {where: [
-                {user_id: user.id},
-                {public: true},
+            expect(findOne).toHaveBeenLastCalledWith({where: [
+                {id: '1', user_id: user.id},
+                {id : '1', public: true},
             ]});
 
             expect(error).toMatchObject(new Exception('Not found.', 404));
@@ -345,9 +345,9 @@ describe('AccountController.delete', () => {
             expect(authUserSpy).toHaveBeenLastCalledWith(req);
 
             expect(findOne).toHaveBeenCalledTimes(1);
-            expect(findOne).toHaveBeenLastCalledWith('1', {where: [
-                {user_id: user.id},
-                {public: true},
+            expect(findOne).toHaveBeenLastCalledWith({where: [
+                {id: '1', user_id: user.id},
+                {id : '1', public: true},
             ]});
 
             expect(deleteFn).toHaveBeenCalledTimes(1);
@@ -382,9 +382,9 @@ describe('AccountController.delete', () => {
             expect(authUserSpy).toHaveBeenLastCalledWith(req);
 
             expect(findOne).toHaveBeenCalledTimes(1);
-            expect(findOne).toHaveBeenLastCalledWith('1', {where: [
-                {user_id: user.id},
-                {public: true},
+            expect(findOne).toHaveBeenLastCalledWith({where: [
+                {id: '1', user_id: user.id},
+                {id : '1', public: true},
             ]});
 
             expect(error).toMatchObject(new Exception('Not found.', 404));
