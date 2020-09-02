@@ -277,7 +277,6 @@ describe('AccountController.update', () => {
 
             expect(update).toHaveBeenCalledTimes(1);
             expect(update).toHaveBeenLastCalledWith('1', {
-                user_id: user.id,
                 username: req.body.username,
                 password: req.body.account_password,
                 host: req.body.host,

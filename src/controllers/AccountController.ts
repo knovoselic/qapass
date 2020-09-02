@@ -109,7 +109,6 @@ class AccountController extends BaseController implements interfaces.Controller
         if(!account) throw new Exception('Not found.', 404);
 
         await this.accountRepository.update(account, {
-            user_id: user.id,
             username: req.body.username,
             password: req.body.account_password,
             host: req.body.host,
