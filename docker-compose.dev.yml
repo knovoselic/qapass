@@ -7,7 +7,6 @@ services:
             APP_ENV: ${APP_ENV}
             APP_SECRET: ${APP_SECRET}
             APP_RUN: ${APP_RUN}
-            TZ: ${TZ}
             DB_HOST: ${DB_HOST}
             DB_PORT: ${DB_PORT}
             DB_USERNAME: ${DB_USERNAME}
