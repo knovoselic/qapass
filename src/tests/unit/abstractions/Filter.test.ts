@@ -19,7 +19,7 @@ describe('Filter.apply', () => {
                 query: {
                     host: host_query_value
                 }
-            } as Request
+            } as unknown as Request
 
             expect(filter.apply(req, sqb)).toMatchObject(sqb);
             expect(hostSpy).toHaveBeenCalledTimes(1);

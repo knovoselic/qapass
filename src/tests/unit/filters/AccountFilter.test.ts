@@ -3,9 +3,13 @@ import { SelectQueryBuilder } from 'typeorm';
 import AccountFilter from '../../../filters/AccountFilter';
 
 describe('AcountFilter.host', () => {
-    describe("when req.host is set and value is undefined/null/false/''", () => {
+    describe("when req.host is set and value is undefined/false/''", () => {
         it("returns undefined", () => {
-            const sqb = {} as SelectQueryBuilder<any>;
+            const where = jest.fn();
+
+            const sqb = {
+                where: where as Function
+            } as SelectQueryBuilder<any>;
 
             const filter = new AccountFilter;
 
@@ -15,32 +19,25 @@ describe('AcountFilter.host', () => {
                 query: {
                     host: undefined
                 }
-            } as Request
+            } as unknown as Request
 
             filter.apply(req, sqb);
 
             expect(hostSpy).toHaveBeenCalledTimes(1);
             expect(hostSpy).toHaveReturnedWith(undefined);
 
-            req.query.host = null;
+            req.query.host = 'false';
 
             filter.apply(req, sqb);
 
             expect(hostSpy).toHaveBeenCalledTimes(2);
             expect(hostSpy).toHaveReturnedWith(undefined);
 
-            req.query.host = false;
-
-            filter.apply(req, sqb);
-
-            expect(hostSpy).toHaveBeenCalledTimes(3);
-            expect(hostSpy).toHaveReturnedWith(undefined);
-
             req.query.host = '';
 
             filter.apply(req, sqb);
 
-            expect(hostSpy).toHaveBeenCalledTimes(4);
+            expect(hostSpy).toHaveBeenCalledTimes(3);
             expect(hostSpy).toHaveReturnedWith(undefined);
         });
     });
@@ -60,7 +57,7 @@ describe('AcountFilter.host', () => {
                 query: {
                     host: host
                 }
-            } as Request
+            } as unknown as Request
 
             filter.apply(req, sqb);
 
