@@ -4,7 +4,6 @@ services:
         image: com.codecons.qapass:prod
         restart: always
         environment:
-            APP_ENV: production
             APP_SECRET: codeconssecret
             APP_RUN: dist
             DB_HOST: mysql

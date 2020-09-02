@@ -25,10 +25,9 @@ class ErrorHandler
             this.logger.write(content, 'errors.log');
         }
 
-        if(process.env.APP_ENV == 'local') console.log(err);
+        if(process.env.NODE_ENV == 'development') console.log(err);
 
         if(accepts_json(req)) {
-
             return res.status(err.status)
                 .json({
                     message: err.message

@@ -4,7 +4,6 @@ services:
         image: com.codecons.qapass:dev
         restart: always
         environment:
-            APP_ENV: ${APP_ENV}
             APP_SECRET: ${APP_SECRET}
             APP_RUN: ${APP_RUN}
             DB_HOST: ${DB_HOST}
