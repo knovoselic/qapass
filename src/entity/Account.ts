@@ -5,7 +5,6 @@ import User from "./User";
 @Entity({name: 'accounts'})
 @injectable()
 export default class Account {
-
     @PrimaryGeneratedColumn()
     id: number;
 

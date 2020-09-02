@@ -88,8 +88,11 @@ class AccountController extends BaseController implements interfaces.Controller
 
         if(!account) throw new Exception('Not found.', 404);
 
+        const ownedByCurrentUser = account.user_id == user.id;
+        
         return this.render(res, 'account-manager/edit', {
             account: account,
+            ownedByCurrentUser: ownedByCurrentUser,
             csrf: req.csrfToken(),
             user: user,
             errors: validation_errors(req)
@@ -107,14 +110,18 @@ class AccountController extends BaseController implements interfaces.Controller
         ]});
 
         if(!account) throw new Exception('Not found.', 404);
-
-        await this.accountRepository.update(account, {
+        let updateParams = {
             username: req.body.username,
             password: req.body.account_password,
             host: req.body.host,
             description: req.body.description,
-            public: req.body.public,
-        });
+            public: account.public
+        };
+        if (account.user_id == user.id) {
+            updateParams.public = req.body.public;
+        }
+
+        await this.accountRepository.update(account, updateParams);
 
         return res.redirect('/');
     }
