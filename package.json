@@ -10,7 +10,7 @@
     "migration-run": "./node_modules/.bin/knex migrate:latest",
     "migration-revert": "./node_modules/.bin/knex migrate:rollback",
     "build-dist": "./node_modules/.bin/tsc",
-    "test": "NODE_ENV=test ./node_modules/.bin/jest --runInBand --detectOpenHandles",
+    "test": "NODE_ENV=test ./node_modules/.bin/jest",
     "test-watch": "NODE_ENV=test ./node_modules/.bin/jest --watch",
     "coverage": "./node_modules/.bin/jest --runInBand --detectOpenHandles --forceExit --coverage"
   },
