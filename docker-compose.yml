@@ -5,7 +5,6 @@ services:
         restart: always
         environment:
             APP_SECRET: codeconssecret
-            APP_RUN: dist
             DB_HOST: mysql
             DB_PORT: 3306
             DB_USERNAME: codecons

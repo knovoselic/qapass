@@ -5,7 +5,6 @@ services:
         restart: always
         environment:
             APP_SECRET: ${APP_SECRET}
-            APP_RUN: ${APP_RUN}
             DB_HOST: ${DB_HOST}
             DB_PORT: ${DB_PORT}
             DB_USERNAME: ${DB_USERNAME}

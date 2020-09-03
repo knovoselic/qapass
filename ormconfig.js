@@ -2,6 +2,13 @@ if (process.env.NODE_ENV === 'test') {
      process.env.DB_DATABASE = `${process.env.DB_DATABASE}_test`
 }
 
+let rootDir = './src';
+let fileExtension = '.ts';
+if (process.env.NODE_ENV == 'production') {
+     rootDir = './dist';
+     fileExtension = '.js';
+}
+ 
 module.exports = {
     "type": "mysql",
     "host": process.env.DB_HOST,
@@ -12,17 +19,17 @@ module.exports = {
     "synchronize": false,
     "logging": false,
     "entities": [
-         `${process.env.APP_RUN == 'dist' ? 'dist' : 'src'}/entity/**/*.${process.env.APP_RUN == 'dist' ? 'js' : 'ts'}`
+         `${rootDir}/entity/**/*${fileExtension}`
     ],
     "migrations": [
-         `${process.env.APP_RUN == 'dist' ? 'dist' : 'src'}/migration/**/*.${process.env.APP_RUN == 'dist' ? 'js' : 'ts'}`
+         `${rootDir}/migration/**/*${fileExtension}`
     ],
     "subscribers": [
-         `${process.env.APP_RUN == 'dist' ? 'dist' : 'src'}/subscriber/**/*.${process.env.APP_RUN == 'dist' ? 'js' : 'ts'}`
+         `${rootDir}/subscriber/**/*${fileExtension}`
     ],
     "cli": {
-       "entitiesDir": "src/entity",
-       "migrationsDir": "src/migration",
-       "subscribersDir": "src/subscriber"
+       "entitiesDir": "./src/entity",
+       "migrationsDir": "./src/migration",
+       "subscribersDir": "./src/subscriber"
     }
  }

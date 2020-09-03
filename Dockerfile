@@ -1,12 +1,13 @@
 FROM node:14-alpine
 
-ENV NODE_ENV production
 WORKDIR /usr/src/app
 
 COPY . .
 
 RUN npm install
 RUN npm run build-dist
+
+ENV NODE_ENV production
 RUN npm prune --production
 
 RUN rm -rf src \
