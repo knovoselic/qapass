@@ -5,6 +5,11 @@ services:
         restart: always
         environment:
             APP_SECRET: codeconssecret
+            DB_HOST: mysql
+            DB_PORT: 3306
+            DB_USERNAME: codecons
+            DB_PASSWORD: codecons
+            DB_DATABASE: codecons
         build:
             context: .
             dockerfile: Dockerfile
