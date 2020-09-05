@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
 export default (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.headers, req.url, req.originalUrl);
-
     const proxyUrl = req.header('x-original-url');
     if (proxyUrl) {
         req.url = req.originalUrl = proxyUrl;

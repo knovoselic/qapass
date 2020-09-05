@@ -11,9 +11,9 @@ if(process.env.APP_SECRET) {
 }
 
 const session = cookieSession({
-    name: 'session',
+    name: 'qapass_session',
     keys: [secret],
-    maxAge: 600000
+    maxAge: 3153600000000
 });
 
 passport.serializeUser((user: any, done) => {
