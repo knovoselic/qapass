@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 
-export default (req: Request, res: Response, next: NextFunction) => {
+export default function iis_proxy_support(req: Request, res: Response, next: NextFunction) {
     const proxyUrl = req.header('x-original-url');
     if (proxyUrl) {
         req.url = req.originalUrl = proxyUrl;
