@@ -5,6 +5,7 @@ import path  from 'path';
 import stack from './stack';
 import iis_proxy_support from './iis_proxy_support';
 import * as bodyParser from 'body-parser';
+import express from 'express';
 
 const hbs = exphbs.create({
     extname: 'hbs',
@@ -41,6 +42,7 @@ export default (app: Application): void => {
     app.engine('hbs', hbs.engine);
     app.set('view engine', 'hbs');
     app.set('views', path.resolve(`${__dirname}/../../resources/views`));
+    app.use(express.static('public'));
     app.use(bodyParser.urlencoded({"extended": true}));
     app.use(stack);
     app.use(methodOverride(function (req, res) {
