@@ -6,6 +6,7 @@
 // @author       Kristijan Novoselic
 // @match        https://*.glooko.com/users/sign_in*
 // @match        http://*.my.localtest.me:3000/users/sign_in*
+// @connect      qapass.codecons.com
 // @require      https://openuserjs.org/src/libs/sizzle/GM_config.js
 // @grant        GM_getValue
 // @grant        GM_setValue
