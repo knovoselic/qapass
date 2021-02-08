@@ -4,6 +4,7 @@ import '../controllers/AuthController';
 import '../controllers/AccountController';
 import '../controllers/ApiKeyController';
 import '../controllers/ApiController';
+import '../controllers/BrowserExtensionController';
 import { createConnection, Connection, Repository, getCustomRepository, getRepository } from 'typeorm';
 import User from '../entity/User';
 import Account from '../entity/Account';
