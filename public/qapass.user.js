@@ -174,7 +174,7 @@ const html = `
 <div class="qapass-header">
   <div class="qapass-title">
     <div class="qapass-logo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><text x="0" y="14">🦄</text></svg>
+      <img src="http://qapass.codecons.com/unicorn.png" alt="QAPass logo" />
     </div>
     <h1>Matching accounts</h1>
     <div class="qapass-close" role="button" aria-label="Close" tabindex="0"><svg class="Bz112c Bz112c-r9oPif" xmlns="https://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#5f6368"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path><path fill="none" d="M0 0h24v24H0z"></path></svg></div>
