@@ -221,6 +221,8 @@ function fetchAccounts() {
             "Authorization": `Bearer ${GM_config.get("ApiKey")}:${GM_config.get("ApiSecret")}`
         },
         onload: function(response) {
+            const list = document.querySelector("#qapass-container .qapass-account-list");
+
             if (response.status === 401) {
                 const accountElement = document.createElement("div");
                 accountElement.className = "qapass-account-no-results";
@@ -240,8 +242,7 @@ function fetchAccounts() {
                 return;
             }
 
-            const results = JSON.parse(response.responseText);
-            const list = document.querySelector("#qapass-container .qapass-account-list");
+            const results = JSON.parse(response.responseText);  
 
             if (results.length === 0) {
                 const accountElement = document.createElement("div");
